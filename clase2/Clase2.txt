@@ -1,0 +1,242 @@
+------------------------------------------------
+Introducción a C: 
+------------------------------------------------
+
+Se escribe un main.c y en la consola de Linux se debe hacer en una terminal:
+
+gcc main.c -o main 
+
+-o es output, si no se le pone nada el out será un archivo denominad "a.out"
+
+En el ejemplo4.c se puede ver cómo se manejan punteros con funciones. 
+
+------------------------------------------------
+Procesos concurrentes: 
+------------------------------------------------
+Concepto de programa: 
+    Un programa es una entidad pasiva, como el ejemplo4.c. Solamente que es
+    compilado y ejecutado. Esto está estático en un disco, cuando se compila se
+    convierte en una entidad activa. 
+
+    El concepto de proceso es mucho más que código compilado. 
+    Un proceso tiene estados. Pregunta de examen: ciclo de vida de un proceso. 
+
+    Gráfico de la filmina: 
+        Nuevo --> preparado --> en ejecución    --> terminado
+
+            en ejecución ---> preparado
+                |               | 
+                +--> espera <---+
+
+        Nuevo = cuando se le da doble click a un icono para que corra el
+        proceso. 
+
+        Preparado= Lo que hace es ponerlo en espera para los programas que están
+        listos para correr en el procesador, cuando se corre htop se listan
+        estos estados de procesos. Que están esperando que el kernel le asigne
+        tiempo para que se corra en el micro. 
+
+        Interrupción= el sistema operativo le da un poco de tiempo a cada
+        proceso, segú la prioridada, lo hace correr un tiempo y lo saca, le da
+        un quantum de tiempo, esta interrupción es de tiempo. Se le acaba el
+        tiemp para correr y vuelve a preparado. Iimportante: INTERRUPCION DE
+        TIEMPO. 
+            
+        Espera = tiene que ir a imprimr por ejemplo por pantalla 
+        También se da con el fallo de página. 
+        Pregunta de examen: realizar un grafo de los estados y explicarlos y
+        tener en cuenta en poner los motivos de las flechas. 
+
+        La mitad del micro es cache, y la otra mitad es la Alu, registros, etc. 
+        La velocidad entre la memoria cahce y el micro por una cuestión es
+        espacial y es muy rápidao. Cuando tiene que hace una E/S con la memoria
+        RAM es un poco más lento. Pero cuando tiene que ir a un disco, imprimir,
+        escaner, entonces es muy lento. Por lo que hace se desaloja de la
+        ejecución, se pone en espera, se busca la impresora, la pantalla etc y
+        cuando lo tiene entonces lo pone en Preparado para que luego se ejecute
+        ya con el hardware. 
+
+        Cuando se termina de imprimir y todo, entonces se pasa a terminado (se
+                le pone un PID para identificarlo). El PID nunca se repite. 
+
+        Si se pone un for que hace muchas cuentas matemáticas, sólo estará en
+        dos estados: preparado y ejecución porque la ALu ya hace cuentas
+        mateimaticas. En cambio si en ese FOR se pone un imprimir por pantalla
+        estará más tiempo en el estado de Espera. 
+
+--------------
+    Bloque de control de procesos: Conjunto de atributos que tiene los procesos
+    que no tiene un programa compilado. 
+--------------
+
+    Es todo lo que tiene los procesos que le faltan al programa. 
+
+    Estado: sería en qué lugar del grafo me encuentro. 
+
+    PID : process ID es como el DNI del proceso. 
+
+    Contador de programa: puntero a la siguiente instrucción a ejecutar. es
+    importante porque el SO saque al proceso de ejecución, tiene que saber dónde
+    estaba ejecutando. 
+
+    Registros del CPU: la maquina RISC es una maquina que tiene un conjunto de
+    instrucciones reducido, tiene en general 32 registros. 32 porque: 
+        la alu tiene dos bocas con 32 bits por cada boca. El ancho de memoria
+        también sería de 32, así saca y mete. Maquinas viejas son las RISC. Esa
+        maquina tenía una tabla de 32 registros, con las instrucciones de
+        Assembler era tomar dos entradas y las ponía en salida. Los argumetnso
+        de RISC eran de 3 argumntos: 2 entradas y 1 salida. En C cuando se pone
+        por ejemplo i++ se dice que la variable i tien que ir ...(no importa)
+        Cuando el proceso se guarda porque se le acabo el quantum, debe agarrar
+        el registro de todas las variables que tiene el programa y guardarlas y
+        saber en dónde terminó para cuando se le vuelva a dar tiempo saber dónde
+        seguir. 
+
+    Prioridad: es un atributo que tiene un proceso es la 
+
+    Información sobre la memoria: cuando se compila y ase sabe la cantidad de
+    memoria a utilizar. 
+
+    Información contable: cuántos milisegundos corrió el proceso sobre el
+    procesador. Lleva la cuenta de cuánto tiempo estuvo corriendo el proceso. 
+
+    Información de entrada salida: qué dispositivo se está uttilizando, por
+    ejemplo si hay uno que utiliza la impresora, el SO sabe que no puede asignar
+    a otro proceso mientras el otro lo está utilizando. 
+
+    --> Pregunta de examen: liste estas características 
+
+
+CONCURRENCIA: 
+2 procesos son concurrentes entre si si es que son independientes. Es decir, son
+independientes entre si cuando no importa el orden en que se ejecute. el
+resultado es siempre el mismo. Es cuando no importa el orden en que se ejecuten
+el resultado es siempre el mismo. 
+Si hay un proceso que imprime "HOLA" 
+Otro proceso imprimie "PERRO" y se corren al mismo tiempo, son independientes
+porque no importa el orden el resultado siempre es el mismo. 
+
+Para tener independencia en la ejecución deben tener comunicación entre si. 
+www.youtube.com --> se aprieta play. 
+Primero se llena el buffer (el que llena el buffer es un proceso)
+El otro es el proceso que reproduce el video que se ejecuta cuando se le da el
+play. El primero siempre va adelante y siempre haciendo E/S, se maneja
+independiente. 
+Para nosotros siempre el resultado es el mismo, vemos el video. Pero los
+procesos anteriores son lo mismo. El programa es un sistema concurrente. 
+
+
+PARALELISMO: 
+capacidad de ejecutar procesos de manera paralela. Está asociado al hardware. La
+única manera de ejecutar las procesos A LAVEZ es que te lo permita el hardware. 
+Se tiene cuando hay mas de un cause que lo proporciona el hardware. 
+
+Breve historia: 
+    Antes tenían procesadores con un solo cause, 1 solo proceso dentro de un
+    solo procesador.  En los 80 se inventaron varios causes.  
+    Ahora hay varios causes N. 
+
+
+Paralelismo NO implica concurrencia. Si se tiene paralelismo (con hardware
+adecuado) se va a necesitar la capcidad de correr procesos concurrentes
+
+3 Conceptos: 
+Multiprogramación: tener un solo cause y dividir en tajadas de tiempo varios
+programas y tener la sensación de que sucede todo a la vez
+Multiprocesamiento: es tner varios causes. Se tiene varios procesadores para
+varios procesos. 
+Procesamiento distribuido: idea de cluster. 
+    Tener nodos distribuidos para ejecutar computo masivo. 
+    Ley de Amdhal saca como conclusión que si uno tiene más poder de computo en
+    realidad la mejora no conviene ejecutar el mismo programa, sino agrandar el
+    problema, es decir agrandar el programa que se corria originalmnte. 
+    Cluster: en vez de tener un procesador, se quiere n procesadores. 
+    www.top500.org --> top de computadoras más grandes. 
+    beefolfcluster --> cluster con máquinas viejas. 
+    Ps3 --> cluster cuando está inactivo. 
+    [Se ve en la clase 7 por lo que no se explica mucho]
+
+monoprocesador = un solo cause. Los procesos van intercambiandose entre si un
+tiempo el P1, otro tiemp el P2 y puede haber un P3 que lo utilice otro tiempo.
+Lo que no puede pasar es que se superpongan los Procesos. 
+Si se tiene multiprocesador se puede tener por ejemplo a P1 y P2 corriendo en
+simultaneo (dependiendo de cuántos cause tenga el procesador)
+
+Función Fork
+
+Con esta instrucción el cause de ejecución no es de arriba hacia abajo, sino que
+se tiene un cause distinto. Se puede correr de forma concurrente. S
+Se tene dos procesos simultaneamente [ejemplo5.c]
+Cuando se ve en la ejecución del programa el fork() lo que hace es crear un
+proceso nuevo, que es un proceso hijo pero dentro del padre. Lo que hace es
+duplicar el espacio de memoria del padre, comparte todas las variables. 
+Copia toda la memoria esatica
+Minix tiene una tabla de posibles procesos que son 100. Si se llena esa tabla,
+el fork() da -1. Solo puede crear 99 procesos nada más. El fork() da -1 y sale
+con error y se lo informa al SO. 
+
+Con el fork no se puede saber cuándo un proceso se ejecuta primero. Por lo que
+se utiliza la función sleep() en el del hijo. Para dormir al hijo y que ejecute
+el hijo y no el padre. 
+Sino el 
+
+Pregunta de examen: ¿existe el otro estado que no sea determinado? Que es el
+estado zombie, que cuando el hijo no tiene nada que ejecutar y está esperando
+que el padre muera o al revés. 
+Preguna de examen: Escriba un código en C donde un proceso A cree un proceso
+hijo B. Se pone el [ejemplo5.c]
+
+Pid son numeros enteros, mayores que cero. Puede tener 3 valores: un número
+mayor que cero, puede ser cero para el pid del hijo en un proceso padre; o sino
+puede valer -1.
+
+Los grafos de instrucción no se toman porque es muy teórico, es preferible
+entender el fork(), pagina 14. 
+
+HILOS: 
+Es tan fácil como fork. Lo que es difícil es programar la libreria de hilos. 
+
+Proceso padre tiene un espacio de memoria asociado y luego tiene un código. 
+En el espacio tien ela pila, los datos, el conador de programa. Y tiene un solo
+cause. Cuando se hace fork, se crea un hijo ideantico, lo que cambia solo es el
+PID. Es costoso en tiempo en recurso hacer un fork(). 
+La idea de hilo es agarrar el procso y utilizar el mismo tamaño de memoria de un
+solo proceso pero hacer correr varias hebras. Tiene varios beneficios: 
+    - Comparten espacio de memoria. Los hilos ya de por sí comparten espacio de
+    salida. Cada hilo la idea es mandarlo por causes distinto. Cada hebra corre
+    por distintos causes, si una se que. Se te bloquea una hebra y no se saca el
+    proceso en ejecución del procesador, sino que siguen las otras que se estén
+    bloqueando. 
+
+Instancias de Kernel: 
+Uno a uno: todo el tiempo se hacen solicitudes al kernel (como por
+ejemplo imprimir en pantalla). Cuano se tienen hebras se pueden una
+instancia de kernel que le responda a cada hebra, Cada hebra hace una solicitud
+a una instanaica del kernel. 
+Muchos a Uno: Otra forma es que muchas hebras llaman a una sola instanacia de
+kernel. Es un costoso cuando hay muchas hebras. 
+Por lo que se hace es muchas hebras --> algunas instancias de kernel. 
+
+Hilos en modo kernel e hilos en modo usuario. 
+
+(faltan 10 minutos de clase)
+
+Diferencia entre procesos e hilos (buscarlo en Internet): 
+
+Creación: 
+    Procesos: son costosos para crear
+    Hilos: son bastante ligeros
+Recursos(memoria): 
+    Procesos: Independientes
+    Hilos: Compartidos
+Comunicación: 
+    Procesos: compleja
+    Hilos: Sencilla
+Cambio por Sistema operativo: 
+    Procesos: Muy lento
+    Hilos: Rápido
+Proramación: 
+    Procesos: Reducida
+    Hilos: Alta. 
+
+        
