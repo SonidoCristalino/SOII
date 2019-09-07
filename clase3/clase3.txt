@@ -1,0 +1,296 @@
+Clase 3: teoría 1 - Inerbloqueo
+
+En carpeta (sobre el final de Redes II)
+
+Recursos: 
+    Apropiativos: el micro
+    No apropiativos: los recursos que se ceden a u nproceso y no se le puede
+    sacar, una impresora, una lectora de cD, etc que no se pueden sacar cuando
+    el proceso se está ejecutando. 
+
+
+Recursos se dibujan como cajas, y los procesos como burbujas. 
+ 
+Para qu haya un deadlock debe haber una bloqueo de tipo cíclico. 
+Condición par que haya deadlock: 
+    - Exclusión Mutua: debe haber recursos no compartidos de uso exclusivo, es
+    decir, cada recurso se asinga a un solo proceso en un momento dado. 
+    Recursos no compartidos de uso esclusivo, es cuando ese recurso se lo hace
+    un proceso, ese recurso queda bloqueado para ese proceso. 
+    - hold and wait (contención y espera)-se toma un recurso y se espera por
+    otro. (Flecha que entra hacia el proceso, quiere decir que ese recurso esta
+            reternido por el proceso, cuando la flecha está desde el proceso al
+            recurso, el proceso está pidiendo ese recurso)
+    - Condicion no apropiativa - significa que una vz que se le dio un recurso a
+    un proceso, no se lo puede expropiar. El micro NO estaría en esta condición
+    ya que se cede a un proceso y luego se lo saca todo el tiempo. 
+    - Espera circular - es una cadena circular donde cada proceso está esperando
+    un recurso que está siendo tomado/utilizado por otro. 
+
+    Debe haber recursos pares y procesos pares, en la misma cantidad. 
+
+    Hay recursos que tienen dos puntos que significa que el recurso tiene dos
+    instancias, es un mismo recurso como subdividdo, cuando se tomar el puntito
+    e nel diagrama, se debe especificar qué tipo de sub-recurso está tomando de
+    ese recurso (de la caja general). 
+
+Algoritmo de la avestruz: 
+Es no hacer nada. Ingenieros vs Matemáticos, los últimos quieren darle solución
+y los ingenieros decían que no hacía falta porque la probablilidad de que suceda
+un interbloqueo era baja, por lo tanto no hay que hacer nada. 
+
+Pregntas de examen: 
+    * diferencia entre recursos apropiativos y no apropiativos
+    * Condiciones para deadlock. 
+    * En qué consiste el algoritmo de la aveztruz
+    * Ingenieros vs matemáticos ¿qué se piensa? 
+    * Dados 4 recursos y dos procesos, graficar cómo sería un deadlock (para
+            ello dibujar todo en una forma ciruclar y los recursos que sobren se
+            asignan a un proceso que ya tien eun recurso tomado). 
+
+¿Cómo se da cuenta de un deadlock? 
+Hay una solución que se puede realizar realizando Grafos [ver carpeta]. Se
+comienza siempre por algún proceso externo (en el caso es B) y se siguen las
+flechas. 
+
+Algoritmo de Deadlock: 
+--------------------
+    Lo que se hace es tomar el primer elemento del arreglo y se recorre todos
+    los elementos y se compara. Si no existe repetido entonces se pasa al
+    siguiente elemento y así con todos. En caso de que sea repetido, existe una 
+    Se compara todos contra todos. 
+    Hay momentos en donde se pueden generar más listas porque son otros grafos
+    posibles, por lo que el algoritmo se vuelve muy costoso. 
+
+    Ventaja:    Es simple
+    Desventaja: es costoso e nlo que respecta al computo. 
+
+    L = [B]
+    L = [B, T]
+    L = [B, T, E]
+    L = [B, T, E, V]
+    L = [B, T, E, V, G, U]
+    L = [B, T, E, V, G, U, D]
+    L = [B, T, E, V, G, U, D, T]    ---> acá se produce una espera circular,
+    porque aparece nuevamente la T. 
+    
+    El tipo de algoritmo debe ser recursivo por lo que se tiene una complejidad
+    mucho mayor en consumo de recursos de memoria. . 
+
+Algoritmo del Banquero. 
+----------------------
+
+Asignación: 
+|  | A | B | C |
+|PO| 0 | 1 | 0 |    ---> proceso 0 tiene una instancia de B
+|P1| 2 | 0 | 0 |    ---> proceso 1 tiene 2 instancias de A
+|P2| 3 | 0 | 3 |
+|P3| 2 | 1 | 1 |
+|P4| 0 | 0 | 2 |
+     7   2   6      ---> totales asignados
+
+Requerimientos (Lo que pide cada proceso para terminar): 
+|  | A | B | C |
+|PO| 0 | 0 | 0 |    --> Este proceso terminara de ejecutar por no requereir mas
+|P1| 2 | 0 | 2 |
+|P2| 0 | 0 | 0 |    --> Lo mismo sucede con esto, deberia de ejecutar
+|P3| 1 | 0 | 0 |
+|P4| 0 | 0 | 2 |
+
+Recursos Dispoibles: 
+| A | B | C |
+| 0 | 0 | 0 |   ---> Todas apuntadas a algún proceso. Se saca restando los
+Totales asignados a la suma que se hizo de la asignación
+
+Totales asignados: 
+7 de A      --> caja con 7 puntos, recurso con 7 instancias
+2 de B
+6 de C
+
+Se denomina como banquero ya que si todos los procesos le piden a la vez, no
+tiene recursos, lo que se hace es asignarle un recurso a la vez.
+5 Procesos [del 0 al 4]. La matriz de asignació
+
+En el examn o viene los recursos totales, o viene los disponibles, alguno de los
+falta y se deben calcular por si solo. 
+
+Iteración 1: 
+
+Requerimientos: 
+|  | A | B | C |
+|P1| 2 | 0 | 2 |
+|P3| 1 | 0 | 0 |
+|P4| 0 | 0 | 2 |
+
+Recursos Dispoibles: 
+| A | B | C |
+| 0 | 1 | 0 |   ---> Se debe iterar más porque con una sola instancia y no lo
+pide nadie 
+
+|  | A | B | C |
+|P1| 2 | 0 | 0 |    
+|P3| 2 | 1 | 1 |
+|P4| 0 | 0 | 2 |
+
+Iteración 2: 
+
+Requerimientos: 
+|  | A | B | C |
+|P1| 2 | 0 | 2 |
+|P3| 1 | 0 | 0 |
+|P4| 0 | 0 | 2 |
+
+Recursos Dispoibles: 
+| A | B | C |
+| 0 | 1 | 0 |   
+pide nadie 
+
+|  | A | B | C |
+|P1| 2 | 0 | 0 |    
+|P3| 2 | 1 | 1 |
+|P4| 0 | 0 | 2 |
+
+En los disponibles al finalizar todos los procesos, deberían de quedar los
+valores totales disponibles. 
+
+Si hubiera un deadlock se harán varias iteraciones y la cantidad de disponibles
+no podrá satisfacer ls procesos. 
+En esto no importa el orden de los procesos, se irán terminando sin orden, sino
+que depende de los recursos que vaya slicitando para temrinar. 
+En los examenes si llega el caso de producirse un Deadlok, terminaría el
+ejercicio señalandose que se llegó a un deadlock
+
+Inanición: 
+Es un caso especial deadlock que sucede cuando no puden alcanzar los
+recursos que necesita para poder terminar. 
+
+Practica en C
+-------------
+ejemplo1.c:
+La variable i = 20, cuando se encuentra la función fork(), lo que se hace es una
+división del cause y se copian los espacios de memoria identicamente, es decir
+la variable i = 20 será copiada. 
+También sucede que PID dentro de la memoria del proceso, será 0 y para el padre
+será mayor que 0. 
+Le da un número > 0 porque es el PID que el SO será
+
+Para visualizar los procesos con top, se debe poner: 
+# top -U emiliano
+
+Tuberías pipiline:
+-----------------
+
+Para poder comunicar los procsos entre sí, es necesario hacerlo mediante fd[2]
+
+En el examen son 3 puntos: 
+    - en el último punto es hacer algo con el buffer. 
+
+Hay otras formas de hacer una tubería mediante consolas: 
+    1er consola: 
+        mknod tubo p
+        ls -l
+        cat < tubo
+
+    2da consola: 
+        cat > tubo
+    
+En la carpeta Clase3 se generó el nodo
+
+----------------------
+2da parte
+----------------------
+
+
+Comunicación entre proceso (IPC) [filmina Clase nº 3]
+-------------------------------
+
+2 Tipos: Memoria compartida y pasaje de mensaje
+
+Se tienen 2 procesos ¿Cómo se comunican entre si ? 
+- mediante pipe line
+- Memoria compartida: Un espacio de memoria donde uno escribe y el otro lee
+(memoria compartida).  Por lo que la ventaja que tiene esque es muy rápida. La
+desventaja es que requiere que se implemente la memoria compartida es complejo.
+Porque se requiere que la memoria se acceda por los procesos una vez por
+proceso, no pueden entrar las dos a la vez. Tien que haber sincronizmo. 
+Es difícil de implementar o imposible de hacerlo en sistemas multiusuarios (esto
+        no es como en linux sino más bien como máquinas del año del orto como
+        las máquinas bancarias donde cada usuario tenía un espacio de memoria
+        segmentado)
+
+Tampoco puede puede implementarse en sistemas dsigribuidos (ejemplo con las PS3
+        entre vecinos, sería imposible de hacerlo). 
+
+Algunos multiprocesadores :
+token ring: oficinas máquinas con salida a cables coaxil con forma de T, las
+placas de video tenía una entra da pa T (máquinas viejas), se comunicaba en
+anillos entre computadoras (Lo utilizaba IBM). Quedó obsoleto por los switch que
+conectan internet en el día de hoy.
+Algunos procesadors que tienen multiprocesadres y se conectan en forma de
+anillo, y cada micro tiene una memoria privada, por lo que un proceso que tiene
+un procesaodor 1 no puede compartir memoria con otro procesodor 2 con otra
+memoria propia para la 2. 
+
+- Pasaje de memoria: Tiene menos velocidad, por no estar en memoria que es más
+rápida, pero al no tener la problematica de tener la sincronización para pisar
+la misma parte de memoria, entonces para implementarlo es más simple. Ejemplo:
+socket, tuberías, mensajes, buzones. Se suele utilizar más por ser más simple
+
+Preguntas de examen: sobre las características anteriores. 
+
+Ruido en el canal, como por ejemplo cuando se pone DirecTV y llueve. 
+
+Características de las comunicaciones entre procesos: 
+----------------------------------------------------
+[Preguntas de examen]
+
+- Comunicación Directa/indirecta (en el SO): 
+    Cuando es directa cada proceso debe nombrar explicitamente al otro proceso
+    con el que se quiere comunicar. 
+  indirecta : 
+    asociado con lo que tiene que ver con buzones, NO se utiliza el PID del
+    proceso con el que se comunica
+
+- Sincronica o asincronica: 
+
+Sincronica suelen ser bloqueantes porque es como hablar con el teléfono, el
+proceso no puede seguir haciendo otra cosa que no sea comunicarse y reservarse
+para eso. 
+Asincronica es que puede enviar el mensaje y luego pasar a hacer otra cosa.
+Correo postal o mensaje de whatsapp. 
+
+- bloqueante / no bloqueante 
+
+- simétrica / asimétrica
+Simetrica: los dos procesos tienen que tener los PID para comunicarse. Nombra a
+quien escribe y el otro nombra de quien recibe. Se basa en saber si cada uno
+tiene el PID del otro. 
+Asimetrica: solo un proceso que tiene que tner el PID de uno para escribirle, el
+otro no lo tiene. Uno lo sabe y el otro no. 
+
+Buzones: herramienta que provee el So para poder comunicarse entre procesos. 3
+formas de realiarlos: 
+*) 1 a 1 : un proceso manda a un buzón y el otro lee 
+*) Muchos a uno: más de un proceso que escriba y que uno solo lea desde el
+buzón. 
+*) 1 a muchos: comunicación de broadcasting, como la antena de la radio
+emitiendo para todos. 
+
+De qué depende qué buzon implementar, depende de la velocidad de los procesos a
+la hora de emitir mensajes y cuánto tarden en recepcionarlo y leerlos, por eso
+es que algunas veces es necesario poner muchos emisores porque el receptor es
+lento o al revés. 
+
+
+Características del canal: 
+-------------------------
+Direccional y bidirecional (no hay que darle bola)
+Capacidad: 
+*) infinita, ninguno tiene infinito, toda comunicación tiene un máximo
+*) cero: que está cortada la comunicación
+*) Limitada: todas las comunicacionee son limintadas
+
+Tipos de mensaje: 
+Largo fijo
+Largo variable: TCP, el que se usa en internet. 
+
