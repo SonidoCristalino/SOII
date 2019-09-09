@@ -81,7 +81,7 @@
 \begin{document}
 \maketitle
 
-\section{Clase 2}
+\section{Clase nº 2}
 
 \subsection{Concepto de Programa y sus Estados}
 
@@ -424,5 +424,309 @@ Proramación:
     \item
         \textbf{Hilos}: Alta
 \end{itemize}
+
+\section{Clase nº 3}
+
+\subsection{Recursos}
+
+
+En SO se puede determinar que los Recursos:
+\begin{itemize}
+    \item
+        \textbf{Apropiativos}: Un recurso apropiativo es uno que se puede quitar al proceso que lo posee sin efectos
+        dañinos. La memoria es un ejemplo de un recurso apropiativo. Por ejemplo, un recurso de este tipo es el
+        microprocesador, el cual se cede por determinado tiempo a cada recurso y luego se lo expropia.
+    \item
+        \textbf{No apropiativos}: Un recurso no apropiativo es uno que no se puede quitar a su propietario actual sin
+        hacer que el cómputo falle. Si un proceso ha empezado a quemar un CD-ROM y tratamos de quitarle de manera
+        repentina el grabador de CD y otorgarlo a otro proceso, se obtendrá un CD con basura.
+\end{itemize}
+
+Para las gráficas, los Recursos se dibujan como cajas y los procesos como círculos o burbujas.
+Hay recursos que tienen dos puntos que significa que el recurso tiene dos instancias, es un mismo recurso como
+subdividdo; cuando se toma el puntito en el diagrama, se debe especificar qué tipo de sub-recurso está tomando de ese
+recurso (de la caja general).
+
+\subsection{Deadlock/Interbloqueo/Abrazo Mortal}
+
+Para que exista un Deadlock deben darse 4 condiciones:
+
+\begin{itemize}
+    \item
+        \textbf{Exclusión Mutua}: debe haber recursos no compartidos de uso exclusivo, es decir, cada recurso se asinga
+        a un solo proceso en un momento dado. Recursos no compartidos de uso esclusivo, es cuando ese recurso se lo
+        hace un proceso, ese recurso queda bloqueado para ese proceso.
+        Cada recurso se asigna en un momento dado a sólo un proceso, o está disponible.
+    \item
+        \textbf{Hold and Wait (contención y espera)}: se toma un recurso y se espera por otro. (Flecha que entra hacia el
+        proceso, quiere decir que ese recurso esta reternido por el proceso, cuando la flecha está desde el proceso al
+        recurso, el proceso está pidiendo ese recurso).
+        Los procesos que actualmente contienen recursos que se les otorgaron antes pueden solicitar nuevos recursos.
+    \item
+        \textbf{Condicion no apropiativa}: significa que una vz que se le dio un recurso a un proceso, no se lo puede
+        expropiar. El micro NO estaría en esta condición ya que se cede a un proceso y luego se lo saca todo el tiempo.
+        Los recursos otorgados previamente no se pueden quitar a un proceso por la fuerza. Deben ser liberados de
+        manera explícita por el proceso que los contiene.
+    \item
+        \textbf{Espera circular}: es una cadena circular donde cada proceso está esperando un recurso que está siendo
+        tomado/utilizado por otro.
+        Debe haber una cadena circular de dos o más procesos, cada uno de los cuales espera un recurso contenido por el
+        siguiente miembro de la cadena.
+
+\end{itemize}
+
+\subsubsection{Algoritmo de la avestruz}
+
+El algoritmo del avestruz es un concepto informático para denominar el procedimiento de algunos sistemas operativos.
+Esta teoría, acuñada por Andrew S. Tanenbaum, señala que dichos sistemas, en lugar de enfrentar el problema de los
+bloqueos mutuos (deadlock en inglés), asumen que estos nunca ocurrirán.
+Ingenieros vs Matemáticos: los últimos quieren darle solución y los ingenieros decían que no hacía falta porque la
+probablilidad de que suceda un interbloqueo era baja, por lo tanto no hay que hacer nada.
+
+\textbf{¿Cómo se da cuenta de un deadlock?}
+Hay una solución que se puede realizar realizando Grafos [ver carpeta]. Se comienza siempre por algún proceso externo
+(en el caso es B) y se siguen las flechas.
+
+\subsubsection{Detección y Recuperación}
+
+Lo que se hace es tomar el primer elemento del arreglo y se compara contra todos los elementos restantes. Si no existe
+repetido entonces se pasa al siguiente elemento y así con todos. La relación es todos contra todos.
+
+Hay momentos en donde se pueden generar más sub-listas porque pueden haber otros caminos (recursos y procesos posibles)
+lo que genera un grafos más grande, haciendo que el algoritmo se vuelva muy costoso.
+
+La ventaja de éste algoritmo de Detección y Recuperación es que \emph{es simple} de implementar. Pero la desventaja como
+se nombró anteriormente, es que \emph{es costoso} en lo que respecta a la capacidad de cómputo.
+
+    \[Lista = [B]\]
+    \[Lista = [B, T]\]
+    \[Lista = [B, T, E]\]
+    \[Lista = [B, T, E, V]\]
+    \[Lista = [B, T, E, V, G, U]\]
+    \[Lista = [B, T, E, V, G, U, D]\]
+    \[Lista = [B, T, E, V, G, U, D, T]\]
+
+Se puede ver que en la última iteración vuelve a a parecer el recurso T, por lo que existe una espera circular.
+Se puede observar que además este tipo de algoritmo debe ser recursivo por lo que se tiene una complejidad mucho mayor
+en consumo de recursos de memoria.
+
+\subsubsection{Algoritmo del Banquero}
+
+El algoritmo mantiene al sistema en un \emph{estado seguro}. Un sistema se encuentra en un estado seguro si existe un orden en
+que pueden concederse las peticiones de recursos a todos los procesos, previniendo el interbloqueo. El algoritmo del
+banquero funciona encontrando estados de este tipo.
+
+Los procesos piden recursos, y son complacidos siempre y cuando el sistema se mantenga en un estado seguro después de la
+concesión. De lo contrario, el proceso es suspendido hasta que otro proceso libere recursos suficientes.
+
+%Debería ir un gráfico acá de las iteraciones
+
+\textbf{Nota}: Si hubiera un deadlock se harán varias iteraciones y la cantidad de disponibles no podrá satisfacer ls
+procesos. En este algoritmo no importa el orden de los procesos, se irán terminando sin orden, sino que depende de los recursos
+que vaya slicitando para temrinar.  En los examenes si llega el caso de producirse un Deadlok, terminaría el ejercicio
+señalandose que se llegó a un deadlock.
+
+\subsubsection{Inanición}
+En informática, inanición (starvation en inglés) es un problema relacionado con los sistemas multitarea, donde a un
+proceso o un hilo de ejecución se le deniega siempre el acceso a un recurso compartido. Sin este recurso, la tarea a
+ejecutar no puede ser nunca finalizada.
+
+La inanición NO es sinónimo de interbloqueo, aunque el interbloqueo produce la inanición de los procesos
+involucrados. La inanición puede (aunque no tiene porqué) acabar, mientras que un interbloqueo no puede finalizar sin
+una acción del exterior.
+
+
+\subsection{Comunicación entre procesos (IPC)}
+
+Hay que tener en cuenta que la función \emph{fork()} tiene el siguiente funcionamiento: cuando se ejecuta un código
+cuyo flujo es de arriba hacia abajo y se encuentra con la función fork(), lo que sucede es que a partir de ese momento
+el programa se \textbf{duplica}, es decir que el SO coloca en el espacio de memoria dos imagenes totalmente iguales del
+mismo código. Es por ello que luego de la llamada a fork() es necesario escribir el código del proceso hijo y luego el
+código del proceso padre mediante el condicional sobre el número del PID. Cuando el programa copia A ejecuta el mismo
+código que su hijo B, encuentra el condicional y entra al código escrito para su PID. Cuando el otro proceso B con el
+mismo código que A encuentra el código con el IF haciendo mención a su PID, entra a ejecutar ese código.
+
+También sucede que PID dentro de la memoria del proceso, será 0 y para el padre será mayor que 0.
+
+\lstinputlisting[language={C}]{clase3/ejemplo1.c}
+
+Se utiliza la función \emph{getppid()} (get process PID) que se encuentra en la librería \emph{unistd.h} para que cada
+uno de los procesos devuelva el PID de su proceso padre. Tener en cuenta que si esta función es invocada desde el
+proceso padre (en nuestro caso el A), devolverá el PID del proceso que está corriendo la consola.
+
+Es posible que dos procesos generados a partir de fork() se comuniquen entre si, y es utilizando tuberías o
+\emph{pipelines}.
+
+Las funciones \emph{sleep()} se utilizan para poder detener la ejecución del padre durante los segundos que se le
+indiquen como parámetro y poder visualizar su aparición en la tabla de proceso mediante el comando \emph{top} de la
+siguiente forma: \[\$ \emph{top -U usuario} \]
+
+
+Existen dos formas para comunicar procesos:
+
+\begin{enumerate}
+    \item
+        \textbf{Por Memoria compartida}: Se utiliza Un espacio de memoria común entre procesos donde un proceso  escribe
+        y el otro lee. La ventaja de ello es que al utilizar memoria es más rápida en lo que respecta a escribir y leer.
+        Lo complejo de este método es que para que ambos procesos compartan una parte de memoria en común, se requiere
+        que exista sincronía entre ellos, de forma contraria se podrían producir colapsos.
+        En sistemas multiusuarios como los que existían antaño, es imposible implementarlo, como tampoco en sistemas
+        distribuidos. Tampoco se puede implementar en algunos microprocesadores de IBM los cuales al tener la
+        característica de tener varios procesadores juntos conectados en forma de anillo, y donde cada procesador tiene
+        una memoria caché exclusiva, se hace imposible que esa memoria dedicada a un procesador la comparta con otro
+        procesador.
+    \item
+        \textbf{Por pasaje de mensaje}: La característica que tiene es que es menos rápida ya que no comparte un espacio
+        de memoria como en el anterior, pero al no verse obligado a implementar un sistema de sincronización, es mucho
+        más fácil de implementar. Ejemplo de estos pasajes son: sockets, pipes, mensajes, buzones.
+        Se suele utilizar esto por ser más simple.
+\end{enumerate}
+
+\subsubsection{Características de las comunicaciones entre procesos}
+
+\begin{itemize}
+    \item
+        \textbf{Comunicación Directa/indirecta (en el SO)}: Cuando es directa cada proceso debe nombrar explicitamente
+        al otro proceso con el que se quiere comunicar.
+    \item
+        \textbf{Comunicación indirecta}: asociado con lo que tiene que ver con buzones, NO se utiliza el PID del
+        proceso con el que se comunica
+    \item
+        \textbf{Sincronica}: suelen ser bloqueantes porque es como hablar con el teléfono, el
+        proceso no puede seguir haciendo otra cosa que no sea comunicarse y reservarse
+        para eso.
+    \item
+        \textbf{Asincronica}: es que puede enviar el mensaje y luego pasar a hacer otra cosa.
+        Correo postal o mensaje de whatsapp.
+    \item
+        \textbf{Envío y recepción Bloqueante}:
+
+        El emisor espera hasta que el mensaje ha sido entregado
+
+        El receptor espera hasta que le llegue el primer mensaje
+    \item
+        \textbf{Envío y recepción No Bloqueante}:
+
+        El emisor no resulta bloqueado en ningún caso
+
+        El receptor tampoco
+
+        La función recibir devuelve error si no hay mensajes disponibles
+    \item
+        \textbf{Simetrica}: los dos procesos tienen que tener los PID para comunicarse. Nombra a
+        quien escribe y el otro nombra de quien recibe. Se basa en saber si cada uno
+        tiene el PID del otro.
+    \item
+        \textbf{Asimetrica}: solo un proceso que tiene que tner el PID de uno para escribirle, el
+        otro no lo tiene. Uno lo sabe y el otro no.
+\end{itemize}
+
+\subsubsection{Buzones}
+
+
+Los Buzones son una herramienta que provee el So para poder comunicarse entre procesos. Existen tres formas de
+realizarlos:
+\begin{itemize}
+    \item
+        \textbf{Uno a uno}: un proceso manda a un buzón y el otro lee
+    \item
+        \textbf{Muchos a uno}: más de un proceso que escriba y que uno solo lea desde el buzón.
+    \item
+        \textbf{Uno a muchos}: comunicación de broadcasting, como la antena de la radio emitiendo para todos.
+\end{itemize}
+
+¿De qué depende qué buzon implementar? Depende de la velocidad de los procesos a la hora de emitir los mensajes y cuánto
+tarden en recepcionarlo y leerlos, por eso es que algunas veces es necesario poner muchos emisores porque el receptor es
+lento o varios receptores porque los procesos son lentos al leer los mensajes enviados.
+
+\subsubsection{Características del canal}
+
+Según su Capacidad:
+\begin{itemize}
+    \item
+        \textbf{infinita}:, ninguno tiene infinito, toda comunicación tiene un máximo
+    \item
+        \textbf{cero}: que está cortada la comunicación. Que no existe un canal.
+    \item
+        \textbf{Limitada}: todas las comunicacionee son limintadas.
+\end{itemize}
+
+Según el Tipos de mensaje:
+\begin{itemize}
+    \item
+        \textbf{Largo fijo}:
+    \item
+        \textbf{Largo variable}: TCP, el que se usa en internet.
+\end{itemize}
+
+\subsubsection{Tuberias o Pipelines}
+
+Para que dos procesos se comuniquen entre sí es necesario que lo hagan mediante lo que se denomina \emph{tuberías o
+pipelines}. La comunicación por medio de tuberías se basa en la interacción productor/consumidor, los procesos
+productores (aquellos que envían datos) se comunican con los procesos consumidores (que reciben datos) siguiendo un
+orden FIFO. Una vez que el proceso consumidor recibe un dato, éste se elimina de la tubería.
+
+El siguiente es un ejemplo de cómo proceder en lenguaje C para poder establecer una tubería:
+
+\lstinputlisting[language={C}]{clase3/ejemplo3.c}
+
+Se deben aclarar los siguientes puntos:
+
+\begin{itemize}
+    \item
+        \textbf{string.h}: se incluye la librería para el tratamiento de cadenas.
+    \item
+        \textbf{stdlib.h}: se incluye la librería para la función \emph{exit} en caso de que haya algún error creando el
+        proceso hijo.
+    \item
+        \textbf{fd[2]}: es un vector de dos elementos que sirve como file descriptor para la comunicación de procesos.
+        Sería la tubería respectivamente.
+    \item
+        \textbf{buffer[80]}: es la variable que alojará lo recibido por el proceso A. Dentro de \emph{buffer} se
+        guardará lo que el proceso padre recibe, que en este caso es una cadena que dice ''hola mundo''.
+    \item
+        \textbf{pipe()}: es la función encargada de tomar el vector de enteros denominado \emph{fd} y convertirlos en
+        file descriptos para que se comuniquen los procesos. Según la página de manual de \emph{pipe()} dice lo
+        siguiente:
+        \emph{The pipe() function shall create a pipe and place two file descriptors, one each into the arguments fildes[0]
+        and fildes[1], that refer to the open  fileescriptions  for  the  read and write ends of the pipe.
+        Data  can  be  written  to the file descriptor fildes[1] and read from the file descriptor fildes[0].  A read on
+        the file descriptor fildes[0] shall access data written to the file descriptor fildes[1] on a first-in-first-out
+        basis}.
+    \item
+        \textbf{close()}: Siempre se debe invocar esta función tanto sea en el padre como en el hijo antes de utilizar
+        cada \emph{fd[]}. Se debe cerrar el \emph{fd} que no se utilizará y utilizar el otro para la comunicación.
+    \item
+        \textbf{write()}: \[ssize\_t write(int fildes, const void *buf, size\_t nbyte);\]
+        Según el manual, la función \emph{write()} permite escribir \emph{nbytes} de tamaño desde el buffer apuntado
+        como \emph{buf} al archivo asociado con el file descriptor abierto \emph{fields}. La función devuelve un tamaño
+        de bytes escritos.
+    \item
+        \textbf{read()}: \[ssize_t read(int fildes, void *buf, size_t nbyte);\]
+        Según el manual: la función \emph{write()} intentará leer \emph{nbytes} desde el archivo apuntado por el file
+        descriptor abierto \emph{fildes}, al buffer apuntado como \emph{buf}. La función devuelve un tamaño de bytes
+        leídos.
+    \item
+        \textbf{sizeof()}: Permite saber el tamaño en bytes de su argumento, sin importar que sea un dato primitivo o un
+        dato creado por el usuario, como ser un struct.
+\end{itemize}
+
+Hay otras formas de hacer una tubería mediante consolas:
+
+En la primer consola colocar:
+\begin{enumerate}
+    \item
+        \emph{mknod tubo p}
+    \item
+        \emph{ls -l}
+    \item
+        \emph{cat $<$ tubo}
+\end{enumerate}
+
+En la segunda consola colocar:
+\begin{enumerate}
+    \item
+        \emph{cat $>$ tubo}
+\end{enumerate}
 
 \end{document}
