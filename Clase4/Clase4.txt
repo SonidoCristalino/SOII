@@ -1,0 +1,345 @@
+[Faltan 20 minutos]
+
+Itinerario: 
+    21/09: feriado
+    28/09: consulta
+    05/10: parcial nº 1
+    12/10: feriado
+    19/19: clase 5 / consulta
+    26/10: Recuperatorio nº 1
+    02/11: Clase 6
+    09/11: Clase 7
+    16/11: Parcial 2        ---> si todo va bien, acá termina la materia
+    23/11: flotante 
+
+Consulta: programa comunicandose mediante tubos. 
+escriba un programa C donde el padre cree un hijo
+    dada la siguiente cadena, el padre, le escriba al hijo usando tubo
+    que el que reciba la cadena haga algo con la cadena
+
+Se evalua que esté en formato en C
+
+--------------
+Sincronización : 
+--------------
+
+Procesos cooperativos. 
+
+Razones por las que se implementa: 
+    * Compartir información
+    * Acelerar cálculos
+    * Modularidad
+
+Productor / consumidor. 
+
+Buffer :
+    ilimitado: no existe más que en el libro . Productor puede escribir 
+    limitado: el productor  tiene que esperar si el buffer está lleno. 
+
+Características del buffer: 
+Buffer es un vector de memoria consecutiva. ¿Qué sucede si se sigue produciendo
+datos cuando termina el vector? Se debe programar circular para que apunte a la
+primera posición. 
+Hay que tener en cuenta que cuando los dos punteros de produccotr/consumidor
+apuntan a la misma celda, significa que está vacio. 
+
+Todos los problemas de consumidor/producor tiene una variable entera que se
+denimonia "counter"
+Productor lo que hace es counter++ 
+consumidor lo que hace es counter--
+
+Counter lleva la cuenta de los elementos válidos dentro del buffer
+Todo esto siempre estará la memoria compartida, se denomina sección critica, ya
+que tiene el buffer y la variable contador. 
+
+Memoria de espacoi que comparte dos procesos, se tiene que asegurar que solo uno
+pueda entrar a ese espacio y sólo uno. 
+Se debe dar lo que se denomina exclusión mutua. 
+
+Ejemplo: 
+El productor produce 1. 
+Consumidor despues consume 1 inmediatamente despues. 
+Counter debería de termianr con 0 o con la misma cantidad de elementos que antes
+de que impacte el productor. 
+
+En el ejemplo de abajo se tiene en cuenta que counter = 3. 
+
+Código en assembler: 
+        counter++ (adelanta el puntero en uno en el buffer el productor)
+            reg1 = counter
+            reg1 = reg1 + 1
+            counter = reg1
+
+        Nota: Lo que sucede qe en el reg1 entra por una boca de la ALU y luego
+        el literal 1. Cuando se hace reg1 = counter, la variable counter se
+        guarda en el registro de memoria, cuando suma el literal lo vuelve a
+        poner enel registro con el nuevo valor counter + 1. 
+        Esto lo hace el proceso nº 1. Como son dos procesos distintos, ¿qué
+        sucede si luego de ejecutarse la primera instrucción, lo saca del micro
+        y pasa a eecutar el proceso nº 2 del consumidor? luego el planificador
+        velve con el proceso nº 1. 
+        Ejemplo de ejecución: 
+            reg1 = counter  == reg1 = 3
+            reg1 = reg1 + 1 == reg1 = 4
+            reg2 = counter
+            reg2 = reg2 - 1 == reg2 = 3
+            counter = reg2  == reg2 = 2
+                            counter = 4
+            counter = reg1 == counter = 4
+
+
+        Nota: Lo que sucede qe en el reg2 entra por una boca de la ALU y luego
+        el literal 1. Cuando se hace reg2 = counter, la variable counter se
+        guarda en el registro de memoria, cuando resta el literal lo vuelve a
+        poner enel registro con el nuevo valor counter - 1. 
+        Esto lo hace el proceso nº 2. 
+
+La solución a esto es que cuando va el procso de consumir a la memoria se haga
+para si la memoria compartida, producir el dato, adelantar el puntero a la
+siguietne espacio de memoria. Todo esto lo debe hacer SIN que el proceso de
+consumidor se meta antes de que termine. . 
+
+Ejemplo: contar el numero de coches que pasan por los dos carriles de una
+autopista. El problema que tiene esto es que si dos coches pasna a la misma vez
+¿qué hace el contador? Suponiendo que por cada coche en cada carril se lleven la
+cantidad de coches en un contador que pasan por determinada barrera. si pasan 2
+a la vez, el contador vuelve un problema. 
+
+Sección Critica: 
+Conjunto de recursos que deben ser accedida por exlusión mutua. Es un conjunto
+de recursos, pueden ser tanto la memoria como la pantalla, la impresora, etc. 
+
+Soluciones por software l problma de la memoria compartida: 
+
+Solución Decker (filosofica) y luego Peterson el que escribió el código de la
+idea de Decker. 
+Idea de Decker: 
+Un iglu y dos esquimales (proceso 1 y 2)
+
+
+    Recordatorio de Características del buffer: 
+    Buffer es un vector de memoria consecutiva. ¿Qué sucede si se sigue
+    produciendo datos cuando termina el vector? Se debe programar circular para
+    que apunte a la primera posición.  Hay que tener en cuenta que cuando los
+    dos punteros de produccotr/consumidor apuntan a la misma celda, significa
+    que está vacio. 
+
+Intento nº 1: 
+Sólo un proceso entra por la puerta del iglu, dentro ve el nº 1, sale agarra la
+lanza (es el recurso compartido), sale a cazar, vuelve y pone el nº 2. El
+proceso nº 2 entra, ve el 2 y agarra la lanza y sale a casar, cuando vuelve pone
+el 1 y así... 
+Ventajas: Se asegura la exclusión mutua, no hay ninguna manera de que los dos
+estén dentro en un ismo momennto. 
+Desventajas: si el proceso 1 muere cazando un oso, no vuelve nunca, por lo que
+el otro no entra a la sección crítica nuevamente. 
+Los procesos están acompasados, o está dentro uno o el otro, si hay uno que
+utiliza mucho la sección crítica, y el otro mucho, el problema es el tiempo que
+utiliza el tiempo siempre es el más lento. 
+
+Se vuelve inutil la solución del Decker por lo que se desarrolló otra. 
+
+Intento nº 2: 
+Otro iglu (variable) dentro del caso anterior, serían dos iglu. Por lo que los
+dos procesos entrarían en en distintos inglus. Las pizarras están en falso
+(libres) ¿Cómo hace n los esquimales entrar en la secció ncríica? 
+El proceso 1 entra al iglu 2 y ve falso, vuelve al suyo y pone verdadero, por lo
+que está en la sección crítica. 
+El proceso 2 va al iglu 1 y ve verdadero entonces lo que hace es esperar. 
+El proceso 1 cuando termina pone falso y se repite eso tanto para 1 o para 2. 
+
+El problema que tiene esto: si dos esquimales se cruzan y ponen verdadero las
+dos pizarras. Acá surge el problema porque ambos van a poner verdadero en sus
+pizzarras, lo peor es que acá hay dos iglu, en el anterior, al haber uno se
+asegura la exlusión mutua. 
+El problema del planteo 1 es el tiempo que lleva cada proceso dentro de la
+sección mutua. 
+
+Intento nº 3 : 
+Dos iglues como el anterior. 
+Proceso 1 entra asu propio iglu, pone veradero, y a partir de ahí va al otro
+iglu y ve si es falso, entonces significa que está en la sección crítica. 
+El problema: Si ambos ponen verdadero en su propio iglu y salen a ver el otro
+iglu, si ambos hacen lo mismo, se vuelve un problema. 
+Esto hace que se esta situación se repita de manera continua, por lo que se
+produce un interbloqueo, porqu cada uno vuelve a poner en su pizarra falso,
+        luego los dos ponen verdadero, y así continuamente. la solución nº 3
+        tiene el problema del interbloqueo. 
+
+Intento nº4: Es algo parecido con lo que hace TCP/IP. 
+Se implementa el inteno nº 3 pero con tiempo, es decir que en caso de un proceso
+vea dos verdadso en ambos iglues, lo que hace es esperar un tiempo aleatorio
+para poder volver a chequear las pizarra, por lo que cada proceso podrá en algún
+momento entrar ya que los tiempos que debe esperar son aleatorios. El problema
+que tiene acá es si los tiempos aleatorios se repiten, por lo que se vuelve al
+problema nº 3, pero esto sucedería con una baja probabilidad. 
+
+Intento nº 5: (Solución de Decker)
+Se pone un 3er iglu con la solución 4 que funciona como árbitro, donde estaría
+puesto el nº del proceso que está puesto ahí. 
+
+Esto es muy complicado poder implemntarlo para varios procesos. 
+
+Pregunta de examen. El problema que tiene 
+¿Qué pasa si un proceso que está en la sección crítica muere? Esto es la
+problemática que atraviesa a todos los intntos, si un proceso está ocupando la
+memoria criticia y muere, entonces se vuelve problemaático. 
+
+Lo que se hizo es solucionarlo por hardware.
+Se pensó que haya en assembler una instrucción que permita bloquear el acceso a
+la Sección Critica.
+
+TSL:
+---
+TSL es un registro candado bb
+Solución SW con ayuda de hardware
+* Instrucción de assembler indivisible:
+TSL registro, candado
+    * «candado»: variable compartida
+    * 0: permite paso (cualquiera lo puede poner a 1)
+
+"TSL reg, candado"
+
+Candado abierto = 0, la sección crítica está abierta a que se utilice la
+memoria. 
+Candado es una variable como la que uno declara en C. 
+Se declara una variable candado y se comparte entre todos los procesos que
+quieren entrar a la sección crítica. 
+
+esto hace que haya un registro en la cpu que al haber sido 0, y entre unproceso,
+     entonces se fuerza el 1 y se pone en un registro, en donde se le pregunta
+     ¿reg == 0? si. 
+
+Esta variable se comparte con el restro, no se sabe si hay un proceso en la SC
+(sección critica), se guarda en un registro y se fuerza candado a 1, todo esto
+se hace de manera ATOMICA; no se hace por software. Esto NO es lo mismo que las
+soluciones por software. 
+Lo que permite que haya si o si un solo proceso ue pueda cambiar la variabl
+candado a la vez, y por ende que entre a la sección crítica. 
+Cuando se va de la SC se pone el candado a Cero (se hace con "MOV candado, 0")
+
+Palabra atómica es INDISPENSABLE. Todo funciona porque el intercambio de valor
+de candados se hace de manera indivisible, atómica, en un ciclo de reloj. No se
+pude dividir. Con esta instrucción se asegura que el intercambio se produzca de
+manera indivisible. 
+
+XCHG
+----
+Lo que hace es intercambiar atomícamente el valor registro con el de candado. 
+    reg = 1 --> candado = 0 
+    reg = 0 --> candado = 1
+    reg = 1 --> candado = 0 (esto es lo mismo que hace TCL) cuando registro
+    tiene el valor 1
+
+Semáforos: (Mutex)
+---------
+Solución por software. 
+Se da herramientas (liberías) que permiten generar semáforos (es lo mismo a las
+        soluciones de TSL, por debajo se ejecuta un TSL). 
+
+S = semáforo. Variable entera. 
+
+wait(s);    -> si s es > 0 entonces s = s - 1
+wait(s);    -> si s es < 0 entonces se espera
+
+signal(s);  -> s = s + 1
+
+si s = 0, es que está en rojo. 
+si s = 1, es que está en verde y se puede entrar. 
+
+un proceso si quiere entrar, hace wait(s) sin saber si hay otro proceso en la
+sección critica, lo que hace adentro wait(s), lo mismo que se hace TSL. Cuando
+está en s = 1, está en verde, lo que hace es hacerle un s--. Cuando se termina
+de hacer lo que se tiene que hacer, se hace un signal(s) que lo que haría sería
+un s++. 
+
+Codigo: Mutex
+    int s
+
+    wait(s);
+
+    //código para que se ejecute en la sección crítica un solo proceso. Se
+    //asegura que haya exlusión mutua
+
+    signal(s);
+
+
+Problema de la cena de los filósofos: 
+------------------------------------
+Consiste en 5 filósofos y en el medio de la mesa hay un plato. Cada filósofo
+tiene un tenedor. Cada filósofo e sun proceso y el tenedor es un recurso. Lo que
+hace es un filósofo es o comen o filosofan. Solo pueden comer con 2 cubiertos. 
+El problema es cuando dos filósofos contiguos quieren comer (ya que tiene los
+cubiertos, recursos ocupados). 
+
+Pregunta de examen: ¿Cómo podría darse un interbloqueo en la cena de los
+filósofos?
+Se debe dibujar el esquema de la mesa reonda y explicar cómo se toman los
+recursos . Lo que se hace es programar todos los filósofos iguales, que pidan el
+recurso de la derecha y esperen el de la izquierda. Si hacen todos esto al mismo
+tiempo, se produce un deadlock
+
+Problema de Barrera: 
+-------------------
+Otro problema que se plantea con procesos concurrentes
+En un punto de sincro donde los 3 tienen que llegar para poder seguir ejecutando
+del otro lado de la barrera. 
+Barrera = punto de sincronización donde todos los procesos a distintos tiempos
+deben llegar para poder seguir ejecutando del otro lado de la barrera. 
+La barrera se pude ver como un array lleno de 0 que cuando llga cada uno de los
+procesos se guarda el 1. 
+
+-----------
+MicroKernel:
+-----------
+
+Cada 1000 lineas de código hay 10 errores. Errores que tienen que ver con la
+seguridad. 
+Siguiendo lo anterior, En un sistema operativo con 5 millones de lineas se
+tienen 50 mil errores. Por lo que hay muchos problemas sobre todo de seguridad
+que hay que resolver. 
+Como hay tantos errors entonces se hace: depurar el kernel, se toma todo lo más
+importante y esas rutinas poneras como bsaes del kernel para que sea lo más
+simple posible
+
+
+Dos formas de hacer un Sistema Operativo: 
+----------------------------------------
+
+Monolítico: 
+    Por debajo el hardware, por encima de ello los servicios de scheduling
+    (proceso que se encarga de elige qué rpoceso y cuánto tiempo le corresponde
+     correr en el micro procesador) Es una rutina de software del sistema
+    operativo. 
+    Por sobre el anterior, está el Memori manager: administrador de la memoria
+    que le indica qué cantidad de memoria le correspnde cada programa. 
+    por sobre el I/O manager y el FS (que es el que se encarga de que todos los
+            archivos parezcan como que están organizadas)
+
+    IO manager: administra las entradas y salidas del sistema
+    Sistem Servicess: Ataja las solicitudes de las aplicaciones al sistema
+    operativo. 
+    Por sobre ello se encuentra el modo usuario de los procesos de usuario. 
+
+    Modo Kernel: Lo que no se puede tocar, lo que está ya compilado
+
+Microkernel: 
+    Por debajo el hardware. Sobre ello una ruina que se denomina "microkernel" y
+    pr sobre ella el modo usuario. 
+    En el espacio de usuario es donde se encuentran las rutinas que antes
+    pertenecían al modo kernel
+
+    Gran parte del SO puede ser manipularse por el usuario. 
+    La idea es tener la rutina de MicroKernel lo más chica y simple posible para
+    que no hayan bugs de seguridad en contraposición al otro tipo de kernel
+    (monolítico): 
+    Ventajas: manejador de IO por ejemplo, si se quiere cambiar un driver, se
+    puede desinstalar e instalar otro como si fuera una aplicación de usuario. 
+    Se tiende a la seguridad por ser el MircroKernel ser lo más simple posible. 
+    Con esto se gana en modularidad y en seguridad
+
+    Linux se encuentra generado como un SO con kernel monolítico. 
+
+    Pregunta de examne: 
+    ¿Cual s la motiviación para implementar SO de Micro kernel? ¿cuáles son las
+    ventajas de ello? 
