@@ -729,4 +729,378 @@ En la segunda consola colocar:
         \emph{cat $>$ tubo}
 \end{enumerate}
 
+\section{Clase nº 3 - Sincronización}
+
+\subsection{Procesos Cooperativos}
+
+\textbf{Definición}: Son aquellos que puede afectar o verse afectado por otros procesos que estén ejecutándose en el
+sistema. Estos pueden compartir espacio de direcciones y comparten datos a través de mensajes.
+
+Las razones por las que se implementan estos procesos
+\begin{itemize}
+    \item
+        \textbf{Compartir información}: varios usuarios pueden estar interesados en compartir información.
+    \item
+        \textbf{Acelerar cálculos}: atomizar tareas y ejecución en paralelo.
+    \item
+        \textbf{Modularidad}: Construcción del sistema en forma modular
+    \item
+        \textbf{Convivencia}: múltiples tareas o procesos ejecutándose al mismo tiempo.
+\end{itemize}
+
+\subsection{Memoria Compartida}
+
+Los procesos intercambian información leyendo y escribiendo en lo que se denomina \emph{zonas compartidas}. Estas zonas
+son más rápidas para el transpaso de mensajes ya que como se dijo en la clase anterior, al utilizar memoria, es mucho
+más rápido el acceso a esta, que otros medios.
+
+La memoria compartida es aquel tipo de memoria que puede ser accedida por múltiples programas, ya sea para comunicarse
+entre ellos o para evitar copias redundantes. La memoria compartida es un modo eficaz de pasar datos entre aplicaciones.
+Dependiendo del contexto, los programas pueden ejecutarse en un mismo procesador o en procesadores separados. La memoria
+usada entre dos hilos de ejecución dentro de un mismo programa se conoce también como memoria compartida
+
+\subsection{Productor/Consumidor}
+
+El problema Productor/Consumidor consiste en el acceso concurrente por parte de procesos productores y procesos
+consumidores sobre un recurso común que resulta ser un buffer de elementos. Los productores tratan de introducir
+elementos en el buffer de uno en uno, y los consumidores tratan de extraer elementos de uno en uno.
+
+Para asegurar la consistencia de la información almacenada en el buffer, el acceso de los productores y consumidores
+debe hacerse en exclusión mutua. Adicionalmente, el buffer es de capacidad limitada, de modo que el acceso por parte de
+un productor para introducir un elemento en el buffer lleno debe provocar la detención del proceso productor. Lo mismo
+sucede para un consumidor que intente extraer un elemento del buffer vacío.
+
+Cuando se utiliza memoria compartida los procesos que utilicen la memoria compartida o también denominado \emph{Zona
+Crítica o Sección Crítica} deben estar \textbf{sincronizados} para que el consumidor no intente consumir cuando el
+productor no escribió aún.
+
+\textbf{Buffer}: Buffer es un vector de memoria que se organiza de forma consecutiva. Es por ello que se plantea el
+problema de ¿Qué sucede si se sigue produciendo datos cuando termina el vector? Los programas deben tener en cuenta esto
+por lo que se deben programar de manera circular para que apunte a la primera posición una vez que el buffer se
+encuentra desbordaro. Hay que tener en cuenta que cuando los dos punteros tanto del productor como del consumidor,
+apuntan a la misma dirección de memoria dentro del buffer, significa que está vacio.
+
+
+Todos los problemas de consumidor/producor tiene una variable entera que se denomina \emph{counter} que es la encargada
+de llevar el conteo de los elementos encerrados dentro del buffer. Por lo tanto:
+\begin{itemize}
+    \item
+        El proceso Productor lo que hace es counter++, es decir, aumentar en una unidad la variable contador.
+    \item
+        El proceso Consumidor lo que hace es counter--, es decir, disminuir en uno la variable contador.
+\end{itemize}
+
+Hay que tener en cuenta que tanto la variable que se utiliza de contador,  como el buffer se encuentra en la Sección
+critica y tanto el proceso Productor como el Consumidor utilizarán ambas cosas.
+Es por ello que se debe asegurar que sólo uno de ellos pueda entrar por vez a la Sección Crítica. Esto se denomina
+\emph{exclusión mutua}.
+
+Un ejemplo de cómo proceden los procesos que hacen de Productor y Consumidor:
+\begin{itemize}
+    \item
+        \textbf{Productor}: El productor se le da la posibilida para poder utilizar la \emph{Sección Crítica} por lo que
+        accede al buffer y produce un dato. Acto seguido le suma a la variable contador 1 unidad y el proceso finaliza
+        dejando libre la Sección Critica.
+    \item
+        \textbf{Consumidor}: El proceso que auspicia de Consumidor, al tener libre el acceso a la memoria, incresa y
+        consume un dato del buffer y le resta a la varible contador una unidad. El proceso al finalizar esto, deja libre
+        la Sección Crítica.
+\end{itemize}
+
+El código en Assembler sería algo así:
+
+        counter++
+        reg1 = counter
+        reg1 = reg1 + 1
+        counter = reg1
+
+\textbf{Secuencia}: En la primera línea lo que sucede es que se adelanta en una posición el puntero del contador. Cuando
+la variable \emph{reg1} carga la variable counter se guarda en el registro de la memoria, luego se le suma el literal y
+se vuelve a guardar en el registro de memoria, con el nuevo valor \emph{counter + 1}.
+
+Esto lo realiza el primer proceso denominado Productor (ya que produce un dato). Como son dos procesos los involucrados
+en la Sección Crítica, entonces puede suceder que el Schedule no le asigne más tiempo en el procesador al proceso del
+Productor, pasándolo a un estado \emph{En Espera} en el medio de la creación del dato y la actualización de las
+variables \emph{counter} y \emph{reg1}, y acto seguido le asigne el microprocesador al proceso del Consumidor.
+
+El ejemplo de la ejecución sería el siguiente:
+        reg1 = counter  == reg1 = 3
+        reg1 = reg1 + 1 == reg1 = 4
+        reg2 = counter
+        reg2 = reg2 - 1 == reg2 = 3
+        counter = reg2  == reg2 = 2
+                        counter = 4
+        counter = reg1 == counter = 4
+
+La posible solución a esto es que cuando el proceso Productor se ejecute, se haga para sí de la memoria compartida,
+produzca el dato, adelantar el puntero a la siguietne espacio de memoria. Todo ello lo debe hacer SIN que el proceso de
+consumidor se meta antes de que termine.
+
+En la filmina se trata de ejemplificar esto con la idea de una autopista que cuenta la cantidad de coches que pasan por
+un peaje. ¿Qué sucede si pasan dos coches a la misma vez? El contador entraría en problemas ya que no podría divisar
+esto como dos autos.
+
+\subsection{Posibles Soluciones}
+
+La solución filosófica al problema del Productor/Consumidor la esgrimió Decker, pero fue Peterson quien volcó al código
+e implementó las ideas del primero.
+
+\subsubsection{Solución nº 1}
+
+La aproximación que plante Deker se explica mediante un iglú que funcionaría como una variable, y dos esquimales, que
+vendrían a ser dos procesos.
+
+Sólo un proceso entra por la puerta del iglu, dentro ve en una pizarra, escrito el nº 1, sale del iglú, toma la lanza
+(es el recurso compartido), y va a cazar, vuelve y escribe el nº 2.
+El proceso nº 2 entra al iglu, ve el número 2 escrito en la pizarra, toma la lanza y sale a cazar, cuando vuelve pone el
+1 y el proceso se repite una y otra vez.
+\begin{itemize}
+    \item
+        \textbf{Ventajas}: Se asegura la exclusión mutua, no hay ninguna manera de que los dos estén dentro en un mismo momennto.
+    \item
+        \textbf{Desventajas}: si el proceso nº 1 muere cazando un oso por ejemplo, no vuelve nunca, por lo que el otro
+        no entra a la sección crítica nunca más.
+        Los procesos están acompasados, lo que significa que si existe un proceso que utiliza mucho la sección crítica, y
+        el otro poco tiempo, el problema es que al estar acompasados, el proceso que marcará el paso es el que lo
+        utiliza menos tiempo, por lo que volverá la performance lenta.
+\end{itemize}
+
+\subsubsection{Solución nº 2}
+
+Se plantea el mismo problema que el nº 1, donde existe otro iglu (una segunda variable variable) por lo que serían dos
+iglu. Los dos procesos entrarían en distintos inglus. Las pizarras se encuentran por defecto en \emph{falso} (libres)
+¿Cómo hacen los esquimales para entrar en la Sección Crítica?
+
+El procedimiento es el siguiente: El proceso nº 1 entra al iglu nº 2 y ve falso, vuelve al suyo y pone verdadero, por lo
+que da a entender que se encuentra en la Sección Crítica.
+El proceso nº 2 va al iglu nº 1 y ve \emph{verdadero} entonces lo que hace es esperar. El proceso nº 1 cuando termina
+pone falso y se repite esto para ambos procesos cuando quieran acceder a la Sección Crítica.
+
+La problemática que conlleva esta solución:
+\begin{itemize}
+    \item
+        Si dos esquimales se cruzan y ponen verdadero las dos pizarras. Se complejiza el problema debido a que en este
+        planteo existen dos iglu, a diferencia del anterior que existía sólo uno, al haber uno se asegura la exlusión mutua.
+    \item
+        El problema del planteo nº 1 es el tiempo que lleva cada proceso dentro de la Exclusión Mutua.
+\end{itemize}
+
+\subsubsection{Solución nº 3}
+
+La tercer solución que se plantea también existen dos iglues como en la solución anterior.
+El Proceso nº 1 entra a su iglu, pone \emph{veradero}, y a partir de ahí se dirige al otro iglu y ve si es \emph{falso},
+lo que significaría que está en la Sección Crítica.
+\begin{itemize}
+    \item
+        \textbf{El problema}: surge cuando ambos procesos quieran poner \emph{verdadero} en sus respectivos iglues y
+        salen a poner en la pizarra del otro proceso lo mismo; si ambos realizan lo mismo, entonces se convierte en un
+        problema ya que nuevamente nos encontramos en una Exlusión Mutua
+    \item
+        \textbf{Interbloqueo}: Si la situación anterior se repite de manera continua, se produce un
+        \textbf{interbloqueo}, porque cada uno vuelve a poner en su pizarra falso, luego los dos ponen verdadero, y así
+        continuamente; la solución nº 3 tiene el problema del interbloqueo.
+\end{itemize}
+
+\subsubsection{Solución nº 4}
+
+Esta solución es algo parecido con lo que hace el protocolo \emph{TCP/IP}.
+Se implementa utilizando las características de la solución nº 3 pero con tiempo, es decir que en caso de que un proceso
+vea dos verdadso en ambos iglues, lo que hace es esperar un tiempo aleatorio para poder volver a chequear las pizarra,
+por lo que cada proceso en esta situación, podrá en algún momento entrar, ya que los tiempos que debe esperar son
+\emph{aleatorios}. El problema que tiene acá es si los tiempos aleatorios se repiten, por lo que se vuelve al problema
+nº 3, pero esto sucedería con una baja probabilidad.
+
+\subsubsection{Solución nº 5}
+
+Se implementa lo planteado por la solución nº 4 pero agregando un nuevo iglú que oficiará de árbitro, donde estaría
+escrito el nº del proceso que está dentro de la Sección Crítica.
+
+Pero es muy complicado de implementarlo para varios procesos.
+
+\textbf{Pregunta de examen}: ¿Qué pasa si un proceso que está en la sección crítica muere? Esto es la problemática que
+atraviesa a todos los intentos, si un proceso está ocupando la memoria criticia y muere, entonces se vuelve
+problemático, ya que se estaría utilizando un recurso que nunca pasará a desbloquearse.
+
+\subsection{Solución por Hardware}
+
+Como las posibles soluciones anteriores eran difíciles de implementarlas vía software, se implementó una solución via
+hardware.
+Se pensó que haya en assembler una instrucción que permita bloquear el acceso a la Sección Critica.
+
+\subsubsection{TSL}
+
+TSL es una instrucción atómica en Assembler que permite crear un registro candado. Esto permite implementar una solución
+de Software amparada en hardware
+
+Como se dijo anteriormente,TSL (Test and Set Lock) es una operación que se utiliza frecuentemente cuando se tiene que
+lidiar con problemas de índole general en Exclusión Mutua. Es una instrucción indivisible
+
+\begin{itemize}
+    \item
+        ''candado'': es una variable compartida.
+    \item
+        El valor 0: permite paso (cualquiera lo puede poner a 1)
+\end{itemize}
+
+En informática, la instrucción test-and-set es una instrucción utilizada para escribir 1 (set) en una ubicación de
+memoria y devolver su antiguo valor como una operación \textbf{atómica} única (es decir, no interrumpible). Si varios
+procesos pueden acceder a la misma ubicación de memoria, y si un proceso está realizando una instrucción test-and-set,
+ningún otro proceso puede comenzar otra instrucción de la misma índole hasta que finalice el test-and-set del primer
+proceso.
+
+Se declara una variable candado y se comparte entre todos los procesos que quieren entrar a la sección crítica.
+La variable Candado es una variable como la que uno declara en C.
+
+Cuando el Candado se encuentra en estado \emph{abierto} el valor por defecto es 0, por lo que significa que la sección
+crítica está abierta para que se utilice la memoria. Un proceso pide el acceso a la Sección Crítica por lo que se fuerza
+el 1 al registro Candado. Cuando otro proceso quiera acceder, se evalúa el registro Candado y al encontrarse en 1
+(ocupado) se espera a que la sección sea desocupada.
+
+Esta variable se comparte con el restro de los procesos que interactúan en la misma sección de memoria, no se sabe si
+hay un proceso en la SC (Sección Critica), se guarda en un registro y se fuerza candado a 1, todo esto se hace de manera
+ATOMICA; Esto NO es lo mismo que las soluciones por software.
+
+Lo que permite esto es que haya si o si un solo proceso que pueda cambiar la variable Candado a la vez, y por ende que
+entre a la Sección Crítica, garantizando de esta manera la Exlusión Mutua.  Cuando se va de la SC se pone el candado a
+Cero (se hace con "MOV candado, 0")
+
+Cabe destacar que la palabra atómica es INDISPENSABLE. Todo funciona porque el intercambio de valor de candados se hace
+de manera indivisible, atómica, en un ciclo de reloj. No se pude dividir. Con esta instrucción se asegura que el
+intercambio se produzca de manera indivisible, no interrumpible.
+
+\subsubsection{XCHG}
+
+XCHG (exchange data) es una instrucción en Assembler que permite el intercambio del contenido de dos operandos.
+Lo que genera es el intercambio a nivel atómico del valor registro con el valor de la variable Candado.
+
+\begin{itemize}
+    \item
+        \emph{reg = 1}: por lo tanto se intercambiará con el valor \emph{Candado = 0}.
+    \item
+        \emph{reg = 0}: por lo tanto se intercambiará con el valor \emph{Candado = 1}.
+    \item
+        \emph{reg = 1}: por lo tanto se intercambiará con el valor \emph{Candado = 0}. (Esto es lo mismo que hace TCL
+        cuando registro tiene el valor 1)
+\end{itemize}
+
+\subsection{Semáforos (Mutex)}
+
+Los Semáforos son soluciones que se implementan vía software.
+Se proporcionan herramientas (liberías) que permiten generar semáforos (estas soluciones, por debajo ejecutan
+instrucciones de tipo TSL).
+
+\lstinputlisting[language={C}]{Clase4/ejemplo1.c}
+
+Se debe recordar que la variable ''s'' implementada en el código anterior es de tipo entera y es compartida por los
+procesos como variable Candado.
+
+Función de la función \emph{wait()}:
+\begin{itemize}
+    \item
+        \textbf{wait(s)}: si s es > 0 entonces s = s - 1. Decrementa el valor de s.
+    \item
+        \textbf{wait(s)}: si s es < 0 entonces espera a que la variable retorne a un valor mayor a 0.
+    \item
+        \textbf{signal(s)}: lo que genera es s = s + 1, incrementa el valor de S.
+\end{itemize}
+
+Modo de operar:
+
+Un proceso si quiere entrar a la sección de memoria compartida, hace wait(s) sin saber si hay otro proceso en la
+Sección Critica. La implementación dentro de la función \emph{wait(s)}, es lo mismo que se hace en \emph{TSL}. Cuando
+está en s = 1, está en verde, lo que hace es hacerle un s--. Cuando se termina de hacer lo que se tiene que hacer, se
+hace un signal(s) que lo que haría sería un s++.
+
+\subsection{Problema de la cena de los filósofos}
+
+Consiste en 5 filósofos y en el medio de la mesa hay un plato. Cada filósofo tiene un tenedor. Cada filósofo es un
+proceso y el tenedor es un recurso. Lo que hace un filósofo es o comer o filosofar. Solo pueden comer con 2
+cubiertos. El problema se plantea cuando dos filósofos contiguos quieren comer (ya que tiene los cubiertos, recursos
+ocupados).
+
+\textbf{Pregunta de examen}: ¿Cómo podría darse un interbloqueo en la cena de los filósofos?
+Se debe dibujar el esquema de la mesa reonda y explicar cómo se toman los recursos . Lo que se hace es programar todos
+los filósofos iguales, que pidan el recurso de la derecha y esperen el de la izquierda. Si hacen todos esto al mismo
+tiempo, se produce un deadlock.
+
+\subsection{Problema de la barrera}
+
+Otro problema que se plantea con procesos concurrentes.
+
+En un punto de sincronización donde los 3 procesos tienen que llegar para poder seguir ejecutando del otro lado de la barrera.
+La barrera es un punto de sincronización donde todos los procesos a distintos tiempos deben llegar para poder seguir
+ejecutando del otro lado de la barrera.
+
+La barrera se pude ver como un array lleno de 0 que cuando llga cada uno de los procesos se guarda el 1.
+
+\subsection{MicroKernel}
+
+Se parte del siguiente análisis: \emph{Cada 1000 líneas de código se encuentran 10 errores}. Los caules tienen que ver
+en su gran mayoría con la seguridad del sistema.
+
+Siguiendo lo anterior, En un sistema operativo con 5 millones de lineas se tienen 50 mil errores. Por lo que hay muchos
+problemas sobre todo de seguridad que hay que resolver.
+
+Como hay tantos errores entonces se pensó lo siguiente: depurar el kernel, por lo que se toman las rutinas más
+importantes y son colocadas como bases del kernel para que sea lo más simple posible.
+
+\subsubsection{Kernel Monolítico}
+
+En un Kernel cuya organización es monolítica; debajo de todo se encuentra el hardware, por encima de ello los Servicios
+de Scheduling (proceso que se encarga de elegir qué proceso y por cuánto tiempo le corresponde correr en el micro
+procesador). La misma es una rutina de software del sistema operativo.
+
+Por sobre el anterior, está el Memory Manager: administrador de la memoria que le indica qué cantidad de memoria le
+correspnde cada programa.
+
+Por sobre ellos se encuentran los Servicios de I/O Manager el cual administra las entradas y salidas del sistema; y el
+FS (que es el que se encarga de que todos los archivos parezcan como que están organizadas)
+
+Sistem Servicess: Ataja las solicitudes de las aplicaciones al sistema operativo. Por sobre ello se encuentra el modo
+usuario de los procesos de usuario.
+
+\emph{Modo Kernel}: Lo que no se puede tocar, lo que está ya compilado.
+
+Los sistemas de tipo GNU/Linux se encuentran estructurados como un Kernel Monolítico.
+
+\subsubsection{MicroKernel}
+
+Por debajo se encuentra el hardware. Sobre ello una rutina que se denomina ''microkernel'' y por sobre ella el \emph{modo
+usuario}. En el \emph{espacio de usuario} es donde se encuentran las rutinas que antes pertenecían al modo kernel. Es
+por ello que gran parte del SO puede ser manipulado por el usuario.
+
+La idea es tener la rutina de MicroKernel lo más chica y simple posible para que no hayan bugs de seguridad en
+contraposición al otro tipo de kernel (monolítico).
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item
+        Manejador de IO por ejemplo, si se quiere cambiar un driver, se puede desinstalar e instalar otro como si fuera
+        una aplicación de usuario.  Se tiende a la seguridad por ser el MircroKernel ser lo más simple posible. Con esto
+        se gana en modularidad y en seguridad.
+    \item
+        Podemos cambiar un servicio del SO, cambiando el proceso que lo implementa. Podemos ejecutar programas
+        realizados para otros distinto.
+    \item
+        Un posible error de un servicio del SO queda confinado en el espacio de direcciones del proceso que lo
+        implementa. Es extensible y personalizable.
+\end{itemize}
+
+\vspace{15pt}
+\textbf{Desventajas}:
+\begin{itemize}
+    \item
+        Por otro lado, sus principales dificultades son la complejidad en la sincronización de todos los módulos que
+        componen el micronúcleo y su acceso a la memoria, la anulación de las ventajas de Zero Copy, la Integración con
+        las aplicaciones. Además, los procesadores y arquitecturas modernas de hardware están optimizadas para sistemas
+        de núcleo que pueden mapear toda la memoria.
+    \item
+        Esto mejora la tolerancia a fallos y eleva la portabilidad entre plataformas de hardware, según los defensores
+        de esta tendencia. Sus detractores le achacan, fundamentalmente, mayor complejidad en el código, menor
+        rendimiento, o limitaciones en diversas funciones.
+\end{itemize}
+
+\textbf{Pregunta de examen}: ¿Cual es la motiviación para implementar SO de Micro kernel? ¿cuáles son las ventajas de
+ello?
+
 \end{document}
