@@ -5,8 +5,12 @@
 
 int main (void){
 
-    int fd[2], nbytes; //file descriptor
-    pid_t pid;      //utilizado para poder atajar el proceso hijo
+    //File Descriptor necesario para generar la conexión entre procesos
+    int fd[2];
+    //Variable donde se almacenaran la cantidad de caracteres leidos
+    int nbytes;
+    //Process ID para saber cuándo ejecuta el hijo y cuándo el padre
+    pid_t pid;     //utilizado para poder atajar el proceso hijo
     // [][][][][][][\n] --> para que sepa dónde parar a imprimir
     char cadena[] = "hola mundo\n"; //cadena que se va a pasar al hijo
     char buffer[80];        //para donde poder almacenar la cadena
@@ -27,7 +31,7 @@ int main (void){
      * la función fork() el espacio de memoria se copia igual para el hijo. Ambos códigos son iguales, el padre y el
      * hijo lo mismo que las variables; la única diferencia es son el pid del hijo que será 0, y el padre un número
      * mayor que cero. Como el código es el mismo, entonces el hijo entra cuando se consulta por cero y el del padre
-     * cuando se sale por el else. 
+     * cuando se sale por el else.
      */
     if( pid == 0 ){
 
@@ -37,18 +41,18 @@ int main (void){
         sleep(1);
 
     }else{
-        
+
         printf("Soy el padre\n");
         close(fd[1]); // en este caso el que escucha es el padre
         //sizeof() es para que sepa hasta cuándo va a guardar, que será en este caso 80 porque así es el tamaño del
         //buffer declarado
-        nbytes = read(fd[0], buffer, sizeof(buffer)); 
+        nbytes = read(fd[0], buffer, sizeof(buffer));
         printf("La cadena recibida fue: %s", buffer);
         printf("Se recibieron: %d\n", nbytes);
 
         /*
-         * NOTA: lo que puede ir en el examen es hacer algo con el buffer. Por ejemplo: 
-         * De caracteres a valor decimal, es restarle 48. "1" - 48 = 1 (en decimal). 
+         * NOTA: lo que puede ir en el examen es hacer algo con el buffer. Por ejemplo:
+         * De caracteres a valor decimal, es restarle 48. "1" - 48 = 1 (en decimal).
          * char cadena[6] = "135.23"
          *
          *

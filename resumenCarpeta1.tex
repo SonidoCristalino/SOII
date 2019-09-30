@@ -1103,4 +1103,481 @@ contraposición al otro tipo de kernel (monolítico).
 \textbf{Pregunta de examen}: ¿Cual es la motiviación para implementar SO de Micro kernel? ¿cuáles son las ventajas de
 ello?
 
+\section{Clase nº 5 (Repaso antes del parcial)}
+
+\subsection*{Ejercitación en C}
+
+Se hace un repaso de lo que entra en el parcial en la parte \textbf{práctica}. Lo que entra es sólo lo que se refiere a
+Lenguaje C y la comunicación entre procesos.
+
+\lstinputlisting[language={C}]{clase5/ejemplo1_1.c}
+
+\textbf{Explicación de la función fork()}:
+
+En la ejecución del proceso, cuando el control llega hasta la función \emph{fork()} comienzan a existir dos procesos
+donde uno se denomina \emph{padre} y el otro \emph{hijo}.
+El Sistema operativo tiene asignado un espacio de memoria único para el proceso main que se está ejecutando. En el
+proceso padre declara una variable \emph{pid} la cual, cuando el control se topa con la función fork() el espacio de
+memoria se copia tal cual para el padre como para el hijo. Ambos códigos son iguales, por lo que el padre y el hijo
+utilizan las mismas variables; la única forma de reconocer el código del padre y del hijo es mediante la variable
+\emph{pid} el cual, el del hijo será 0, y el padre un número mayor que cero. Como el código es el mismo en memoria es
+exactamente el mismo, el hijo entra cuando se consulta por cero y el del padre cuando se sale por el \emph{else}, es
+decir, cuando es un número distinto de cero.
+
+\subsubsection*{Ejercicio con conversión de cadena a número}
+
+Se agregará una complicación al proceso que recibe la cadena (quien la lee), obligandolo a realizarle algún tratamiento.
+En el siguiente ejemplo, el proceso hijo le pasa una cadena de números al padre y el padre deberá de almacenarlos como
+números.
+
+\lstinputlisting[language={C}]{clase5/ejemplo2_2.c}
+
+\subsubsection*{Ejercicio con conversión entre mayúsculas y minúsculas}
+
+También se puede pedir en un ejercicio que se realice algún tratamiento con la cadena que se recibe, como por ejemplo
+invertir las minúsculas a mayúsculas y viceversa. En el caso siguiente se sabe que en el código ASCII la diferencia
+entre la letra a y la A se encuentra a 32 caracteres de distancia. Por lo que si se quiere pasar de mayúscula a
+minúscula se debe restarle 32. Como dato se tiene que A mayúscula es 65, que la a minúscula es 97 y que la Z mayúscula
+es 122.
+Ejemplo en código C:
+
+\lstinputlisting[language={C}]{clase5/ejemplo3_3.c}
+
+\subsection{Algoritmo del Banquero}
+
+Para comenzar con éste algoritmo, lo que se tiene que tener en cuenta es que se cuenta con 3 matrices:
+\begin{itemize}
+    \item
+        \textbf{Matriz de Asignación}: En esta matriz los recursos se representan con las letras en la parte superior y
+        los procesos en la columna primera. Esta matriz informa los recursos asignados a determinados procesos en un
+        momento dado.
+    \item
+        \textbf{Matriz de Requerimientos}: Es la matriz que nos informa qué recursos requieren determinados procesos
+        para finalizar su ejecución.
+    \item
+        \textbf{Matriz de Disponibilidades}: Indica cuántos recursos disponibles hay para otorgar a los procesos en
+        ejecución de la \emph{matriz de asignación}.
+\end{itemize}
+
+
+\subsubsection*{Ejercicio}
+Se cuenta con la siguiente distribución:
+
+\textbf{Matriz de Asignación}:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 2  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P2      & 0  & 0 & 1 \\
+        \hline
+            P3      & 0  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 3  & 1 & 4 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 0  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P2      & 1  & 0 & 0 \\
+        \hline
+            P3      & 2  & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 1  & 0 & 0 \\
+        \hline
+            \textbf{Total} & 1 & 0 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Hay que tener en consideración que, para obtener determinadas matrices se puede hacer:
+\begin{center}
+    $A = 3$ (Suma de Asignación más Disponibles)
+
+    $B = 1$ (Suma de Asignación más Disponibles)
+
+    $C = 4$ (Suma de Asignación más Disponibles)
+\end{center}
+
+El paso a seguir es analizar la matriz de Asignación contra la de Requerimientos para saber qué recurso otorgar para
+satisfacer a cada uno de los procesos solicitantes.
+\begin{itemize}
+    \item
+        \textbf{Proceso nº 0}: Se puede ver en la matriz de \emph{Requerimientos} que el proceso solicita una instancia de
+        C, que en la matriz de \emph{Disponibles} no se encuentra apto para poder otorgar. Por lo tanto se pasa al
+        siguiente proceso.
+    \item
+        \textbf{Proceso nº 1}: No se puede satisfacer la solicitud de la instancia de B porque en la matriz de
+        \emph{Disponibles} no hay ninguna instancia disponible. Se pasa al siguiente proceso.
+    \item
+        \textbf{Proceso nº 2}: Se puede satisfacer la solicitud del proceso nº 2 ya que requiere sólo una instancia de A
+        que se encuentra disponible para ser otorgada según la matriz de \emph{Disponibles}. Se procede con este
+        proceso.
+    \item
+        \textbf{Proceso nº 3}: No se puede satisfacer la solicitud de la instancia de C, ya que no se encuentra
+        disponible en la matriz de \emph{Disponibles}.
+\end{itemize}
+
+\subsubsection*{Primera iteración}
+
+\textbf{Matriz de Asignación (Iteración nº 1) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 2  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P2      & 1  & 0 & 1 \\
+        \hline
+            P3      & 0  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 3  & 1 & 4 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 1)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 0  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P2      & 0  & 0 & 0 \\
+        \hline
+            P3      & 2  & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 1)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 0  & 0 & 0 \\
+        \hline
+            \textbf{Total} & 0 & 0 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Al finalizar la primera iteración se obtiene que el Proceso nº 2 pudo finalizar su proceso, por lo que vuelven a estar
+las instancias disponibles para otros procesos. El proceso nº 2 desaparece de las matrices.
+
+\textbf{Matriz de Asignación (Iteración nº 1) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 2  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P3      & 0  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 3  & 1 & 4 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 1)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 0  & 0 & 1 \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P3      & 2  & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 1)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 1  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 1 & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection*{Segunda iteración}
+
+Se puede observar que el siguiente proceso que puede ser satifecho mirando tanto la matriz de \emph{Requerimientos} como
+la de \emph{Disponibles} es el \textbf{Proceso nº 0}. Por lo que se procede con ese proceso:
+
+\textbf{Matriz de Asignación (Iteración nº 2) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 2  & 0 & 2 \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P3      & 0  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 3  & 1 & 4 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 2)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P0      & 0  & 0 & 0 \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P3      & 2  & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 2)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 1  & 0 & 0 \\
+        \hline
+            \textbf{Total} & 1 & 0 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Luego de la segunda iteración las matrices quedan de la siguiente forma:
+
+\textbf{Matriz de Asignación (Iteración nº 2) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P3      & 0  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 1  & 1 & 2 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 2)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P3      & 2  & 0 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 2)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 3  & 0 & 2 \\
+        \hline
+            \textbf{Total} & 3 & 0 & 2 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection*{Tercer iteración}
+
+Se puede observar que el siguiente proceso que puede ser satifecho mirando tanto la matriz de \emph{Requerimientos} como
+la de \emph{Disponibles} es el \textbf{Proceso nº 3}. Por lo que se procede con ese proceso:
+
+\textbf{Matriz de Asignación (Iteración nº 3) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            P3      & 2  & 0 & 2 \\
+        \hline
+            \textbf{Total} & 3  & 1 & 3 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 3)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+            P3      & 0  & 0 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 3)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 1  & 0 & 1 \\
+        \hline
+            \textbf{Total} & 3 & 0 & 2 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Luego de finalizado la ejecución del proceso nº 3, las matrices quedan de la siguiente manera:
+
+\textbf{Matriz de Asignación (Iteración nº 3) }:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 1 \\
+        \hline
+            \textbf{Total} & 1  & 1 & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Requerimientos (Iteración nº 3)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            -       & A & B & C \\
+        \hline
+            P1      & 1  & 1 & 0 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Matriz de Disponibles (Iteración nº 3)}:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+            - & A & B & C \\
+        \hline
+            - & 3  & 0 & 3 \\
+        \hline
+            \textbf{Total} & 3 & 0 & 3 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Como se puede ver, en esta instancia del ejercicio, nos encontramos en un \textbf{Interbloqueo}, lo que significa que
+no se puede satisfacer ningún requisito solicitado por los procesos, dado que no se encuentra en la tabla de
+\emph{Disponibles} para las solicitudes operadas. Este es el caso del \textbf{Proceso nº 1} que solicita una instancia
+más de B, pero no existe esa instancia para podersela otorgar. Finaliza el ejercicio indicando que se llegó a una
+instancia de \textbf{Interbloqueo}, por lo cual no puede seguir continuando.
+
+\subsection{Algoritmo de búsqueda para interbloqueos}
+
+Se declara una variable \emph{L} como una lista que contiene tanto procesos como recursos en una computadora.
+\begin{center}
+    \emph{Dibujo en la carpeta}
+
+    L = [B]
+
+    L = [B,T]
+
+    L = [B,T,E]
+
+    L = [B,T,E,V]
+
+    L = [B,T,E,V,G]
+
+    L = [B,T,E,V,G,T]
+
+\end{center}
+
+Este algoritmo trata de encontrar los posibles interbloqueos en la tabla de procesos operante en el Sistema Operativo.
+Lo que hace es mantener una lista de todos los procesos y solicitudes a instancias de recursos, y recorre esta lista una
+y otra vez para encontrar si hay recursos o procesos repetidos, en caso que se encuentre alguna, se reconoce como una
+\emph{espera circular}. La comparación que realiza es del orden de todos contra todos.
+
+El problema que produce este tipo de algoritmos es que:
+\begin{itemize}
+    \item
+        Es enorme la cantidad de procesamiento que consume para realizar cada comparación recursivamente.
+    \item
+        En un Sistema Operativo normal, se encuentran cientos de procesos con ciento de recursos otorgados y
+        disponibles, por lo que la lista se vuelve inmensa, ya que el alogoritmo debe de tener en cuenta todos los
+        posibles caminos por los que un recurso puede ser poseído por un proceso.
+        Por cada bifurcación, pueden realizar varios caminos distintos por lo que hay que también tenerlos en cuenta para
+        realizar las comparaciones.
+    \item
+        El algoritmo como está planteado, debe de ser recursivo, por lo que se vuelve más pesado aún, generando un uso
+        enorme de la memoria.
+\end{itemize}
+
+También cabe resaltar que este tipo de algoritmos es imposible de implementar por el tiempo de cómputo que consume.
+
+
 \end{document}
