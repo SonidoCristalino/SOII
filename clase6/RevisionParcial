@@ -1,0 +1,23 @@
+Punto 1
+    a) son Espera, circular, hold and wait... 
+    b) inanición puede ocurrir con otros recursos no solo con el procesador. En los demonios que procesos de baja
+    prioridad y sin interfaz gráfica, que como son tan de poca prioridad que casi nunca le dan el procesador para
+    correr, pero es un caso particular
+    c) Este se debe dibujar con 3 procesos y 3 recursos y el recurso sobrante se lo enlaza a un proceso. 
+
+Punto 2)
+    Se tiene bien.
+
+Punto 3: 
+    a) Sincronica: es una comunicación que es bloqueante, el procso tiene que estar atendiendo la comunicación sin poder
+    hacer otra cosa. Es como una llamada telefónica. 
+    no bloqueante, cuando se envía y recibe un mensjae de texto, permite que el proceso esté haciendo otra tarea y no
+    atendiendo exclusivamente la comunicación. Es como enviar un mensaje de texto. 
+    
+Punto 4)
+    Conjunto de recursos que debe ser compartido mediante procsos con exlusión mutia. La memoria no es el único recurso
+    de memoria compartida. 
+    Instrucción atómica de hardware que se usa modificando el valor de una variable candado que está en función para que
+    el SO no quite el proceso del procesador antes de que termine de ejecutar. 
+
+Ejemplo1.c -> ejercicio 6    

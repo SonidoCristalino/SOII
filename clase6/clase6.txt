@@ -1,0 +1,152 @@
+Protección: 
+    - Dominio -> usuarios
+    - objetos
+    - Derechos de acceso 
+    - Diagramas
+    - matriz d acceso 
+    - tabla global
+    - 
+    - 
+    - Estructuras dinámicas
+    - 
+
+[Faltan 10 minutos de clase]
+Básicamente la clase se explica cómo a partir de una matriz se pueden determinados objetos acceder a determinados
+dominios [Leer el libro]
+
+Lista de acceso: 
+    objeto>dominio, derecho>
+    reloj<admin, rw>
+        <alumnos, Execute>
+        <programadores, Read>
+    Compilador<Alumnos, Ex>
+        <<programadores, ReadWrite>
+    Archivos<admin, Ex>
+
+
+Lista de capacidad: 
+    dominio<objeto, derecho>
+    admin<reloj, rw>
+        <alumnos, Execute>
+        <archivos, Read>
+    Alumnos<, Ex>
+        <programadores, ReadWrite>
+    Archivos<reloj, Ex>
+        <archivos, r>
+    Programa< ReadWrite>
+    [.. falta]
+
+Estructuras dinámicas: 
+---------------------
+[Por ejemplo la instrucción de copia]
+    Que el administrador pueda copiar los derechos de un usuario a otro
+[Comando switch]: cuando se pasan de la cuenta de admin a lo de alumnos, es como salir o entrar al superusuario. Se
+    tienen que tener algun comando para poder cambiar los niveles de acceso 
+[Owner]: 
+    Tal archivo sólo es de tal usuario, y sólo lo puede leer él. Es para asignar propiedad sobre los archivos
+[Control]:
+    Dominio que puede controlar a otro. El dominio pasa a ser como si fuera un objeto. 
+    El dominio admin tiene control sobre el objeto alumno. 
+
+Mecanismo de Lock-Key: 
+---------------------
+Dibujo donde se tiene un objeto y por otro lado se tiene un dominio. 
+    [objeto]                        [Dominio]
+       |                                |
+    [lock]                          [key]
+      |                               |
+      --------------------------------
+                    |
+                Funcion
+                    |
+            -------------
+            NO          Si 
+
+A cada objeto y cada domino se le asigna un número binario. Esos dos números se ingresan en una función booleana,
+  entonces según el objeto que se tiene con el número binario, luego de la función se obtiene verdadero o falso por lo
+  que de ahí se obtiene si se puede tener accesso al objeto o no. 
+
+Sistemas Confiables: 
+-------------------
+¿POr qué los sistemas operativos no son absolutamente confiables dsde la seguridad?
+Razón 1: Porque los sistemas no son confiables, pero las personas lo usan igual, lo usuarios no quieren dejar de
+usarlos. 
+2: para que un sistema sea confiable, debe tener simple. Como los usuarios quieren tener "características" en el
+software, por lo que el software se vuelve complejo y por ende el sistema se vuelven complejo, volviendose inseguros. 
+
+Base de computo confiable: 
+-------------------------
+NO tiene nada que ver con base de datos relacional. 
+
+    Modo usuario:
+
+    Proceso usuario (que le hace llamadas al kernel para por ejemplo imprimir en pantalla)
+    Cuando se hace una petición al kernel, baja el pedido y se encuentra con un programa
+    que se llama monitor de la base de cómputo confiable que dentro tiene una base de cómputo confiable. 
+    Que analiza las llamadas y analiza desde el punto de vista de la seguridad. Está dentro de una rutina 
+    del kernel. Este soft monitor, debe ser muy fácil y pequeño, para que sea lo más confiable posible. 
+    Es la idea del microkernel, que sea una rutina chica, simple, y óptima desde la perspectiva de la seguridad. 
+
+                            |
+    ------------------------|---------------------------------------------
+    Modo kernel:            |
+                            V
+        Monitor de Base de cómputo confiable
+        -------------------------
+        Base de cómputo confiable
+
+Microkernel: mejor desde la modularidad. 
+
+Esteaganografía: 
+---------------
+Estructrura de una imagen BMP: Considera una foto o dibujo como una cuadrilla o una matriz donde cada pixel en realidad
+tiene (por ejemplo si es de 24 bytes, porque cada 8 bytes represetan verde, rojo y azul, la mezcla que te da el color de
+cada pixel) Si se hace un zoom sobre el byte que hace de azul en la cuadrilla, se tiene un [][][][][][][][][] de ocho, 
+Otro ejemplo, se toma una novela en txt, donde cada caracter es un byte, entonces si a ese byte se abre, se tienen 8
+bits: [][][][][][][]. Se quiere enviar por internet y ofuscarlo. Se puede tomar el bit menos significativo de esos bits
+del texto y se pueden meter en la imagen suplantando a cada bit de texto y se mete en el bit menos significativo de cada
+uno de los bits de la imagen. La imagen no cambia mucho, peor se tiene dentro de una imagen, un texto que se envía de
+forma encriptada, disfrazada. 
+
+Campson(Canales encubiertos): I
+----------------------------
+[Por ejemplo en un software contable]: se tiene un servidor y un cliente corriente en modo usuario. Cuando el servidor
+hace una petición al kernel, NO pueden comunicar información sensible al kernel. Para que esto no suceda, porque
+para el ejemplo el soft es homologado, se crea una rutina pequeña determinada "Colaborador". El cual se fija en la tabla
+de procesos y ver si el servidor está bloqueado o en proceso. El colaborador lo que hace es ver cuando está en proceso
+                              (haciendo cuentas) eso sería un 1, ahora bien, si se bloquea entonces sería un cero. EL
+                              colaborador mide el tiempo del proceso por el PID y puede enviar ceros o unos dependiendo
+                              si está en proceso o bloquedo. Envía información encubierta. 
+                              [NO se que tiene que ver el software con que sea homologado, pero la idea es que envía
+                              información encubierta dependiendo si el soft está haciendo cuentas (utilizando la ALU) o
+                              está bloqueado, enviando ceros y uno dependiendo de este estado]
+
+Seguridad Multinivel (Bell-la padullla, Biba): [Gráfico en la filmina]  
+Se tienen procesos y objetos, acá tiene otra forma distinta de organizar un sistema con archivos e información. Se
+tienen procesos, objetos y niveles.
+
+Modelo Bell-la padulla: 
+----------------------
+    Es para organizar archivos
+    Regla 1: Un archivo puede leer en su nivel o en uno inferior. 
+    Regla 2: Proceso puede escribir en su nivel o en uno superior
+
+    Esto se usó porque un proceso podía leer en un nivel inferior y reporta escribiendo un reporte hacia arriba. El que
+    está en un nivel puede leer archivo en su nivel o inferior, pero NO superior. Por lo que 
+
+Modelo Biba:
+-----------
+Funciona de la misma manera que el anterior, sólo que lo que hace lo contrario al modelo anterior. 
+    Regla 1: Un archivo puede leer en su nivel o en uno superior. . 
+    Regla 2: Proceso puede escribir en su nivel o en uno inferior
+
+Según el profesor esto no funciona en organizaciones civiles, porque se pueden escribir de forma "corrupta" hacia
+arriba. Puede interrogar hacia abajo y escribir hacia arriba cualquier cosa maliciosa. 
+Sólo funciona en organizaciones militares. 
+
+Trabajo Práctico nº 2:
+---------------------
+Tabla de procesos, y entre los procesos se envían mensajes. 
+    Se deben contar todos los mensajes que se envían entre procesos. Contador global de mensajes. Hacer primero esto. 
+    Armar un vector igual de largo de la tabla de procesos y en cada celda que envía un proceso. Esto dejarlo para
+    después
