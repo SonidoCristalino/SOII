@@ -1,0 +1,337 @@
+16/11 = 2do parcial.
+30/11 = Flotante
+
+Clase 6: Seguridad
+------------------
+1) Integridad de la confidencialidad: se debe asegurara la integridad de la cofidencialidad de los datos (como por
+    ejemplo el mail). Para pinchar las comunicaciones de los celulares, es muy difícil corromper esto.
+2) integridad de los datos: Para pinchar las comunicaciones de los celulares es muy fácil. Los ataques van por el lado
+de la integridad,que por la confidencialidad,es más dificil vulnerar la confidencialidad.
+3) Disponibilidad dell sistema: capacidad de estar online las 24hs. Facebook, y demás redes sociales no siempre están
+online,siempre algunas veces, en cambio hay sistemas que se deben estar disponibles 100% como por ejemplo los sistemas
+para sistemas nucleares, lo que se hace es tener REDUNDANCIA. Es decir que todo el sistema tenga una copia que sea
+productiva.
+4) Exclusión de usuarios externos: sistema de computo debe garantizar que no se permita el ingreso de usuarios no
+deseados.
+    4 tipos:
+        - Usuarios no tecnicos: usuarios pueden entrar de forma casual,como una secretaria que se mete sin querer a la
+        parte del sistema que no le está permitido
+        - Estudiante/programadores: usuarios técniso,que toman como cosa personal el entrar en un sistema de cómputo.
+        - Fines económicos: por ejemplo del virus que encriptaba el disco que pedía bitcoins para poder desencriptarlos.
+        Se utiliza la extorsión.
+        - Espionaje/con fines militares: por ejemplo USA con dilma en Brasil.
+        - Ataques con virus,gusanos, etc.
+
+Causas de la Perdida de datos:
+1) accidentes: por ejemplo, se prende fuego el edificio donde se hospedan los servidores de bases de datos.
+2) errores de hard y software: puede pasar que falle el hardware,dependiendo de la calidad del hard, lo que se requiera,
+    etc. Por ejemplo la disponibilidad depende del dinero que se invierta para tenerlo en ello
+3) Errores humanos: por ejemplo, manipular la base de datos de forma equívoca, y se pasó todo el fin de semana arreglándolo.
+
+CRIPTOGRAFIA:  (Se puede preguntar en el examen)
+------------
+La idea es que se tiene un mensaje en un texto llano, por ejemplo un caracter o una serie de caracteres : [H][O][L][A]
+por ejemplo. Se aplica a ese texto llano una transformación y se envía por algún canal, por ejemplo internet. Se envía
+el mensaje cifrado.
+Del otro lado se aplica otra transformación (puede ser la misma a la inversa, en ese caso se habla de transformaciones
+simétricas) para poder volver al estado original del texto llano, quedadndo de forma igual al original.
+Cuando se aplica OTRA transformación del lado del receptor, se denomina transformaciones asimétricas.
+
+Puntos anecdóticos:
+¿Cuál fue los primeros métodos criptográficos? Los griegos, tomaban una madera y le daban una forma especial (octoganal)
+tomando un cuero y lo envolvían en ángulo, lo enroscaban en ángulo,por lo que se escribía sobre el cuero enroscaado
+y cuando se desenroscaba, quedaba un texto inentendible. Se requería tener el palo en el lado del receptor.
+En este caso es simétrico porque se requiere el mismo palo para volver a formar el texto original. Este método se
+denomina: escitala
+
+Método del césar: se toman una cadena de caracteres y le suman un offset (por ejemplo +3)  En el siguiente texto se ve:
+HOLA --> mensaje original
+KRÑD --> mensaje encriptación.
+Siempre depende del abecedario que se utiliza. Como el que envía suma 3, entonces el receptor debería de restarle 3.
+Este método también es simétrico.
+En el examen entra un ejercicio en C y lo que se hace es sumarle un número a cada caracter.
+
+One time Pad: (bloque de uso único): consiste en una variación del método del césar. Al primer caractér se le suma +3,
+al segundo se le hace -1,al tercero -2, y al cuarto +2,por lo que HOLA quedaría KPJB (mensaje encriptado) siendo la
+la clave: +3, -1, -2, +1. Es simétrico también porque se le debe invertir las operaciones del lado del receptor. El
+problema que tiene éste método, que la clave es tan larga como el texto enviado, si esto se utilizaría en
+internet, se debería de tener el doble de ancho de banda para enviar un texto.
+
+Maquina Enigma: máquina que usaban los alemanes para mandar mensajes. Turing fue el que se dio cuenta cómo era la
+criptografía. Su descrubrimiento acortó la duración de la Segunda Guerra mundial.
+Dos películas: la película de Turing y la de Nicolas Cage.
+
+Red de Faistel: La transformación se realiza mediante hardware, venían diseñado en cajas.. Dos conceptos que se utiliaba
+en esto. Se trabajaba con OR exclusiva:
+    - Confusión: de alguna manera de lo que entra salga cambiado en la salida.
+    - Difusión: el peso de cada bit,se viera repartido su influencia de manera pareja al bit de salida. Que un bit
+    influya en todos los bits de salida.
+
+Sustitución de palabra clave (Se toma en el examen):
+1) se toma una palabra,como por ejemplo ARTURO JAURETCHE (entra seguro en el examen),que va a
+ser nuestra clave. Se le aplica el algoritmo a la calve. Se toma el primer caracter A y ¿esta es la priemra vez que
+aparece en la cadena? SI, entonces se deja. Se toma el siguiente R y se pregunta lo mismo. NO, se deja la R. La T
+apareció? NO y así hasta llegar a la R,por lo que no se baja. y se sigue con todas las letras así, en caso de que se
+repita no se deja o baja:
+
+2) Quedaría: ARTUOJECH ya que las demás letras fueron apareciendo de forma repetida.
+Se copia el abecedario que se tendrá en el examen:
+
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+A R T U O J E C H B D F G I K L M N P Q S V W X Y Z
+
+¿Aparece la A del abecedario? Si, por lo que se pasa al siguiente. ¿La B aparece? NO,entonces baja
+Ver que Las últimas letras VWXYZ aparecen tal cual como el abecedario. Quedan dos abecedarios: el de arriba como si
+fuera el de texto llano y el de abajo el codificado.
+
+3) se pone la palabra sobre el abecedario normal:
+
+Palabra a encriptar: H O L A
+A             H       L     O
+|             |       |     |
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+A R T U O J E C H B D F G I K L M N P Q S V W X Y Z
+
+H -> C
+O -> K
+L -> F
+A -> A
+
+Lo que quedaría: CKFA
+
+Ver que ambos abecedarios en la parte final de la V hasta la Z quedan iguales. Para que esto sea mejor, se debe tener
+una letra más alto,en ARTURO JAURETCHE, el caracter más alto es la U; por eso es que es preferible que haya una Z para
+asegurara que el abecedario encriptado esté modificado completamente.
+
+La clave sería ARTURO JAURETCHE. En el examen viene una clave, se hace el primer paso y luego el abecedario
+La palabra considerada como texto llano que se debe ENCRIPTAR NO va a tener sentido, se puede pedir encriptar tipo
+JOGGSA. Eso hay que hacer como con la palabra HOLA del ejemplo anterior.
+
+Metodos asimétricos (entra seguro en el examen):
+-----------------------------------------------
+Hasta ahora el receptor aplica una transformación inversa; acá se utiliza un método asimétrico y se obtiene el mismo
+resultado.
+Se buscan dos números primos lo más grande que hay: P y Q
+    n = P * Q
+Se buscan E y D tal que:
+    E*D mod((P-1)*(Q-1))) = 1
+
+Ejemplo (la idea es que sean grandes los primos):
+    P = 3 y Q = 5 => N = 3*5 => N = 15
+
+    E = 3 y D = 11
+    E*D mod((P-1)*(Q-1))) = 1
+    3*11 mod((3-1)*(5-1)) ¿es igual a 1?
+
+    33 mod (8) =? 1
+
+    Mod es el resto de la división. 33/8 = 8*4 = 32 y el resto es 1.
+    33 mod (8) = 1 efectivamente. Esto quiere decir que los 4 números sirven para aplicar el método de encriptación del
+    método asimétrico.
+
+    Los 4 anteriores números sirven para encriptar entre:
+        0<= N <= n-1
+    Siendo N un solo bit que es 15. Para
+    Cuanto más grande sean los primos P y Q será más grande el número que se podrá encriptar. En este ejemplo irá entre
+    0 y 14.
+
+Para encriptar:
+    C = M^e Mod(n)
+
+    Se elije M = 8. C = número encriptado, y M = número llano. Para encriptar se aplica:
+        C = M^e Mod(n)
+
+    C = 8^3 mod(15) => 512 / 15 = 34,13. Se pone 15*34 = 510 y la diferencia entre 512 y 510 es 2 siendo este 2 el C
+    buscado. C = 2
+
+Para desencriptar:
+    M = C^d mod(N)
+    M = 2^11 mod(15)
+    M = 2048 / 15 = 136,53. Se toma 136 * 15 = 2040. La diferencia entre 2040 y 2048 es 8 y es el número encriptado.
+    M = 8
+
+El chiste es que se encriptó con el par E y N Y se desencriptó con D y N. El que desencripta NO sabe de E.
+En el examen le viene P Q D Y E, se verifica que el resto de 1, con la siguiente ecuación:
+    E*D mod((P-1)*(Q-1))) = 1
+
+    Si NO da 1, entonces FINALIZA AHI. Si cumple entonces se da un número y se debe verificar que esté DENTRO DEL RANGO,
+    en el ejemplo anterior por ejemplo 27 estaría fuera del rango ya que va sólo de 0 a 14.
+    Y para aplicar encriptar y desenpcriptar se utilizan las fórmulas antes vistas.
+
+Otra variante es que se de lo siguiente:
+    P = 3, Q = 5, E = 7, y D = ?
+
+    E*D mod((P-1)*(Q-1)) =? 1
+    7*D mod((3-1)*(5-1)) = 1
+    7*D mod(8)
+    7*D / 8 y ahí se va buscando. D = 2 y hacer la cuenta para que de resto. Si D = 3 también se pasa. D = 4 tampoco, D
+    =5 tampoco. D = 6 tampoco, D = 7 ahí si ya que 7*7 = 49 y 6 * 8 = 48 y la diferencia es 1.
+
+Temas conceptuales:
+------------------
+
+Preguntas teóricas: el chip TPM:
+Circuito integrado diseñado que iba en las madres que hacía criptografía por hardware. Entraba una palabra y salía
+encriptado. Le gustó a Microsfft para que tenga esto el mother y que se utilice para poder verificar el software para
+que el ususario pague. Implementación de un método criptográfico mediante un hardware
+Autenticación: las formas de autenticar identidad son:
+    - sabe (usaurio y contraseña de home banking)
+    - Tiene (la tarjeta SUBE o la tarjeta para fichar)
+    - Es (cuandos se pide las huellas dactilares).
+
+Contraseñas: en un tiempo el inicio de seción se pedía: Usuario y contraseña. Se hacía una pantalla que decía que el
+error o estaba en el usuario o en la contraseña, eso es tener una ventaja porque se sabía por dónde estaba el error y
+dónde se había ingresado algo bien. Por lo tanto se debe utilziar un error que sólo diga "error en la sesión"
+
+TELNET: se logueaba con un usuario y se pedía una IP. Era como un usuario remoto, que pedía una IP para pegarle, el tema
+es que los hackers tomaban una lista de nombres enomres y las constraseñas eran esos mismos nombres + números. Y se
+realizaban scripts para poder bombarder IP públicas como por ejemplo de las universidades.
+
+Y = f(x). La idea es que X sea la contraseña,y f es una función criptográfica, e Y es el archivo de cómputo. De ida, es
+decir teniendo la contraseña es fácil, pero sin tener la contraseña es difícil.
+La idea es que el archivo que guarda las contraseñas (en este caso Y) aplique un método criptográfico a las contraseñas
+guardadas. Lo que hace es aplicarle n transformaciones, por ejemplo:
+    y = f(f(f(x))) donde se aplique n = 3 transformaciones.
+En la próxima vuelta que se inicia el sistema lo que se hace es n = 2,
+   y = f(f(x)).
+Y así cada vez que se inicializa la máquina. El tema es que se supo qué función se aplicaba por lo que quedó
+
+Retro-Respuestas: se realizan preguntas que sólo el usuario sabe "¿Cómo se llama tu perro?"
+
+Ctrl+Alt+Supr = es una combinación por hardware para poder iniciar sesión de forma directa, esto se hace para que no
+haya ningun software malicioso que se interponga entre medio de el login para obtener los datos de la cuenta y la
+contraseña.
+
+Ataques desde el interior: programador antes de irse de una empresa que deje una "bomba lógica" Un programa que explote
+dentro de X cantidad de días. Eso se hace dejando corriendo en un servidor preguntando por la fecha
+constantemente,cuando le da verdadadero esa fecha, que borre los archivos de la base de datos .
+
+Clase 7: Multiprocesadores
+--------------------------
+Las disciplinas que requieren mucho poder de cómputo (cómputo masivo):
+    - Astronomos: modelan por ejemplo todo el sistema solar, el sentido en que se mueven y todo los cálculos pertinentes a
+    al modelo. Se puede modelar tanto hacia el futuro como para el pasado.
+    - Biologos: Se requieren simulaciones para modelados de la vida natural.
+    - Ingenieros
+
+Limitantes:
+    - Limitantes para generar un procesado más poderoso:
+        * velocidad del reloj: todos ls citcuitos funcionan con una frecuencia que le va marcando el tiempo. ¿Se puede
+        aumentar la velocidad del reloj? Si, pero es difícil extraer el calor con altas frecuencias del reloj. La otra
+        alternativa para mejorar el circuito es bajar el tamaño de los circuitos.
+        * Bajar el tamaño de los transistores: todos los circuitos lógicos que se conocen. Con un AND, OR y con el NOT
+        se puede hacer casi todo. Para que funcione esto se tienen los transisotes, el cual es un circuito que se basa
+        en las compuertas antes mencionadas. Transistores  símil a los ladrillos con los que está construido un
+        circuito. Cuanto más chico sea el ladrillo más espacio en la pared. El mismo circuito pero es más chico, por lo
+        que todo el área que sobra se utiliza para mejorar el circuito. Lo que sobraba le mandaban la memoria cache, que
+        aumenta mucho el rendimiento del microprocesador. Ahora casi la mitad del circuito es memoria cache. También
+        tiene un límite ir aumentando la mem cache.
+        * ¿POr qué no se aumenta el tamaño de la pared o área del procesador? Eso es una cuestión de cómo se fabrican
+        los microprocesadores. Todos los micros se fabrican con silicio, que es como un vidrio que se hacen como
+        cilindros de silicio y lo van cortando en fetas,como si fueran un panqueque. Cuando se calienta un material se
+        desordenan los átomos, se vuelve blando, cuando se enfría de forma muy rápido, no se le da tiempo para que los
+        átomos se ordenen y quedan desordenados en estructuras cristalinas, por lo que faltan átomos por esta falta de
+        orden, lo que hace todo esto es que quede más duro, por eso el herrero es que cuando forja una espada la enfría
+        de repente. Cuando se genera estas barras de silicio se enfria de forma muy despacio para que queden la menor
+        cantidad de errores posibles para que cuando se proyecta el micro no termine funcionando de forma incorrecta.
+        Se trata de que cuando se fabrique, se haga de forma con menos errores posibles sobre el silicio. Si se hace más
+        grande el micro, cuando haya un error el descarte cuando hay un error en el silicio, se debe descartar una
+        pedazo más grande que si se hiciera un pedazo más chico. Es una cuestión costo beneficio para la empresa de
+        fabricación de procesadores.
+        * Se hace más chico el ladrillo, se achica hasta que deja de funcionar como transistor. Se fabrican con cosas
+        denominada sustratos, por lo que cuanto más chico se hace, deja de funcionar como tal el material. Hay un límite
+        en los materiales de construcción. Se llegó al límiete por lo que en vez de achicar más el transistor, lo que se
+        hace es ir poniendo más -> computación paralela. www.top500.org : listada las 500 maquinas más rápidas del
+        mundo. La forma en que se comunican toda la cantida de procesadores es definitiva.
+
+
+Computación paralela [imagen del celular]:
+    - una forma de hacerla es tener una memoria compartida junto con n cantidades de core. (mayor velocidad, porque
+            tiene una memoria compartida que tiene distitnos cores). Esto se parece a un quad core, parecida a las
+    memorias utilizadas en el celular.
+    - Se tienen los cores con algunsa memorias privadas + la memoria compartida. Esto es parecido a la estructura de la
+    Play Station. Cada micro tiene asociada una memoria privada.
+    - Se tiene conectada cada CPU mediante internet (menor velocidad porque está en el medio internet, que comunica cada
+            nodo, el cual es un procesador)
+
+[Para ver los gráficos de lo siguiente, fijarse en las filminas]
+Multiprocesador: sistema de computo en que dos o más CPU comparten una RAM en común. Es decir los primeros dos puntos
+del punto anterior (sin el de internet)
+Tipos de multiprocesadores:
+    - UMA: Acceso uniforma a memoria. Cuando todos los procesadores tienen la misma capacidad de acceso a la memoria.
+    Tipos de UMA:
+        * BUS: forma más común de hacer UMA. El problema que tiene es que el cuello de botella es el bus, si se tiene
+        muchos procesadores y lo quieren utilizar todos a la vez entonces se tiene que esperar a que se desocupe para
+        utilizarlo [Imagen del celular]. Acceso uniforme a memoria porque todos están de forma equidistante al acceso a
+        la memoria.
+            - Bus con varios procesadores conectadas junto con una memoria compartida. Arquitectura vieja, sacada del
+            libro
+            - Cada procesador tiene una memoria cache asociada. Parecido a una arquitectura de procesador de celular.
+            - También existe esta última forma con memoria privada cada uno de los procesadores. Arquitectura tipo
+            PlayStation. Es acá donde se pone mucha energía en desarrollar cosas de vanguardia.
+        El problema que se tiene también al poder comunicar tantos procesadores es quién está modificando el pedazo de
+        memoria accedida por un
+        * Barras cruzadas: se tienen los procesadores puestos en parte izquierda y como en una grilla distitnas
+        memorias, entonces para que cada procesador quiera acceder a determinada memoria compartida, se debe
+        cortocircuitear en la grilla para poder acceder a la misma. Sería parecido a un excel, donde cada fila es un
+        microprocesador y cada columna vendrían a ser microprocesadores.
+        * Multietapas [imagen en el celular], si un microprocesador 1 quiere comunicarse con la memoria 5 entonces cada
+        uno de los micros tienen que proceder a habilitar y desabilitar las entradas y salidas en todo el
+
+    - NUMA: Acceso NO uniforme a memoria.
+
+Ley de Moore: Moore era gerente de INTEL. Que determinó una relación en la cual cada dos años o 24 meses la cantidad de
+transistores por chip se iban duplicando. La cuestión es que después del 2000 se saturó, llegó a un límite, donde
+practicamente no se mejora tanto. Hoy en día NO se cumple la ley de Moore porque no sigue habiendo una mejora constante
+que impacte de manera significativa a la tecnología; no se puede construir chips más chicos, por lo que la mejora no
+es tan considerable como en los años 70, 80 y 90.
+
+Si se tienen varios procesadores ¿qué sistemas operativos se le pueden hacer correr que permita este tipo de
+arquitectura? Deben ser unos SO para multiprocesadores. Se tienen 3 tipos de SO para multiprocesadores:
+
+1)Cada micro implementa un SO privado y todos estos micros están conectados mediante un bus. También tiene una memoria
+compartida conectada al bus, entonces como cada micro corre una instancia del SO. Entonces cada micro utiliza una parte
+asignada para él mismo de la memoria [imagen celular]
+
+2)Se tiene otra forma de que haya un micro que tenga un SO privado que sea maestro y todos los demás microprocesador son
+esclavos que tienen un proceso esclavo corriendo (en el maestro corre por ejemplo el SO principal y en los otros micros
+corren el Explorer, el Crhome y otro programa). También se tiene una memoria principal que comparten entre todos
+los micros mediante un BUS. La memoria está dividia entre la memoria del SO y la memoria para correr un proceso de
+usuario. El problema que tiene es que el bus es un cuello de botella si todos tienen que interactuar con el micro
+Maestro.
+
+3) Cada uno de los micros se pueden correr una instancia del proceso de usuario y luego un proceso del sistema
+operativo. La memoria sigue esstando dividida entre el proceso de SO y de memoria. [Imagen de celular de abajo de todo]
+
+Multicomputadora:
+    Cluster: se toman n CPU conectadas por una red y se generan lo que se denominan Beowulf Cluster. Se juntan máquinas
+    viejas y se conectan vía switchs. Los rendimientos se miden contando los millones de operaciones de punto flotante
+    que puede hacer el cluster por minuto.
+    Casos emblemáticos de PlayStation: cuando queda parada en un determinado protector de pantalla, se conecta desde
+    internet solicitando poder de cómputo, cuando el usuario vuelve, el resultado se envía por internet. El poder de
+    cómputo de la PS en todo el mundo es comparable con las  computadoras listadas en top500.org.
+
+Formas de generar un distema distribuido:
+- Red Estrella donde en el medio hay un swtich.
+- Red comunicada en forma de anillo, en IBM esto era muy utilizado. Token RING, los datos daban vueltas en forma
+circular. El problema que tenía que es que si se corta el cable, las computadoras quedan incomunicadas. Quedó sólo
+implementado en los microprocesadores de IBM.
+- Mesh es una Grilla, que interconecta cada CPU como si fuera una matriz. También se utiliza de forma toroidal, es decir
+que cada CPU se pueda comunicar con las de más abajo.
+
+Granularidad = tiempo de computo sobre el tiempo de comunicación.
+Se tiene un cluster y se le hace correr un programita y el programa está corriendo en cada unodo y muy de vez en cuando
+comparte información con otro nodo. Si casi siempre se utiliza mucho tiempo de computo y poco tiempo comunicandose
+entonces la granularidad es grande.
+Si se tiene mucha comunicación y poca proceso de cómputo, entonces la granularidad es muy baja.
+
+Granularidad gruesa: Más tiempo cuando se está más tiempo computando que comunicandose
+Granularidad fina: Más tiempo cuando se está más tiempo comunicandose que computando
+Cuando da 1 es que tiene el mismo tiempo haciendo cuentas que comunicándose.
+
+Dependiendo de cómo es el problema que uno quiera abocarse se debe hacer analizar el tipo de granularidad. Si se quiere
+tener mucho poder de cómputo o mucho poder de comunicación.
+Las preguntas del examen puede ser que si se tiene un sistema de granularidad gruesa y se quiere implemnetar un cluster
+de PS en internet ¿es posible? Si,porque se tiene mucha capcidad de cómputo y poca velocidad en internet.
+
+Enviar mail: elcircodelossentidos@gmail.com para consultar el laboratorio nº 2
