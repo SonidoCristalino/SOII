@@ -1,25 +1,25 @@
 Laboratorio nº 2 (Equivale al 10% de la nota final)
 Laboratorio nº 3 (Equivale al 10% de la nota final) (se puede hacer en 3 semanas para poder terminarlo)
 
-Multiprocesadores: 
+Multiprocesadores:
 -----------------
 - Lib de C MPICH : librería que se utiliza para hacer programas para correr en n nodos de un cluster. Con esta lib
-permite distribuirla de una forma distribuida. 
+permite distribuirla de una forma distribuida.
 - Virutalización: una máquina virtual es un duplicado de una máquina real, eficiente y aislada. Significa que lo que
-hace la máquina virtual es agregar una capa extra. 
+hace la máquina virtual es agregar una capa extra.
 Windows corre sobre cierto set de instrucciones (depende de cómo esté fabricado el micro va a tener la instrucción de
         ADD Ra, Rb, Rc) y que quizás en INTEL es de una forma, y en MAC esté implementado de forma distinta. Por lo
-tanto es necesaria determinados hardware para. 
+tanto es necesaria determinados hardware para.
 Entre el Hardware INTEL Y AMD el set de instrucciones sea exactamente igual, no puede haber alguna variación, ya qu
 eagregándole un bit , rompe todo. ¿Cuál es la diferencia? QUe pueda ser un mejor la ALU o más rápida, pero el set de
-instrucciones debe ser igual. 
+instrucciones debe ser igual.
 La máquina virtual, lo que hace es agregarle una capa abstracta entre el hardware y un SO, el SO (windows, por ejemplo)
     tiene que mirar para abajo y ver que hay determinados set de instruciones que requiere, pero la máquina virtual
     convierte ese set de instrcciones que necesita windwos en el set de instrucciones de MAC por ejemplo, en caso de
     quese esté corriendo una VM sobre MAC
 
 Tiene que ser aislada porque sobre un mismo hardware se puede estar corriendo dos máquinas virtualizadas (windows y
-        Ubuntu) Y entre las mismas NO debe haber interrupción alguna. 
+        Ubuntu) Y entre las mismas NO debe haber interrupción alguna.
 
     ------------
     WINDOWS
@@ -29,228 +29,230 @@ Tiene que ser aislada porque sobre un mismo hardware se puede estar corriendo do
     Hardware    --> hardware MAC (por ejemplo)
     ------------
 
-Hipervisores: 
+Hipervisores:
 ------------
 
 Hipervisor tipo 1: [Foto celular para ambos hipervisores]
     Donde se tiene el HW (a la derecha se tiene el SO que se está instalado) y el modo kernel interactua con el HW de
     forma normal. Pero hacia la derecha se tiene una VM que interactua con el hardware de la máquina, se instala a nivel
     de SO, y sobre esta VM puede correr el SO que uno quiera (SO invitado se denomina), donde también tiene su
-    respectivo modo Usario y Kernel Virtual, porque corren sobre la VM. 
+    respectivo modo Usario y Kernel Virtual, porque corren sobre la VM.
 
-Hipervisor tipo 2: 
+Hipervisor tipo 2:
    Donde se tiene el HW y se tiene un SO sobre este mismo. Y luego en MODO usuario está corriendo una VM de tipo
-   Hipervisor tipo 1 que está corriendo en modo usuario. 
-   EJemplo de esto es una Java virtual Machine. 
+   Hipervisor tipo 1 que está corriendo en modo usuario.
+   EJemplo de esto es una Java virtual Machine.
 
-La idea de la VM es que reproduzca el HW real. 
+La idea de la VM es que reproduzca el HW real.
 Para virtualización es que se modifique el código de la VM para poder hacer más poderosa la virtualización de
 determinado HW para un determinado SO. De esta forma se genera mejor la eficiencia (ver mejor en las filminas porqu elo
-        explicó por encima). 
+        explicó por encima).
 
 Migración en vivo: consiste en tener un HW con una VM con un SO corriendo arriba y luego otro HW con su VM, sin ningun
 SO, entonces el SO primero, se puede pasar por red y ponerlo en el segundo, todo SIN parar el SO. Esto se hace para
-poder pasar el SO de un lado al otro y usarlo por ejemplo en servidores, y de esta forma hacerles mantenimiento. 
+poder pasar el SO de un lado al otro y usarlo por ejemplo en servidores, y de esta forma hacerles mantenimiento.
 
-Cuadro comparativo: 
+Cuadro comparativo:
 ------------------
 
-NODO: 
-    - Multiprocesadores (como la maquina que está en el celular): cada nodo es un microprocesador o core. 
+NODO:
+    - Multiprocesadores (como la maquina que está en el celular): cada nodo es un microprocesador o core.
     - Multicomputadora: cada nodo es un CPU entero (memoria, almacenamiento, disco tradicional, interfaz de red) pero de
-                                                                forma parcial. 
-    - Sistema distribuido: cada nodo es una CPU TOTAL. 
+                                                                forma parcial.
+    - Sistema distribuido: cada nodo es una CPU TOTAL.
 
-PERIFERICOS: 
+PERIFERICOS:
     - Multiprocesadores (como la maquina que está en el celular): todos los perifericos estan compartidos, se comparten
                                                                 entre los micro que los comparten perifericos
-    - Multicomputadora:  es lo mismo que el Multiprocesadore, pero puede a veces que no compartir el disco. 
+    - Multicomputadora:  es lo mismo que el Multiprocesadore, pero puede a veces que no compartir el disco.
     - Sistema distribuido: Los nodos no comparten nada, como por ejemplo el cluster de PS, donde no comparten nada entre
-                                                                nodos, entre PS. Los periféricos no se comparten. 
+                                                                nodos, entre PS. Los periféricos no se comparten.
 
 UBICACION
     - Multiprocesadores (como la maquina que está en el celular): Los nodos que están dentro de un celular, están dentr
-                                                                ode un mismo lugar, misma ubicación. 
-    - Multicomputadora: generalemnte están en el mismo cuarto. 
-    - Sistema distribuido: justamente están distribuidos a nivel mundial, o en el mismo pais, o mismo continente. 
+                                                                ode un mismo lugar, misma ubicación.
+    - Multicomputadora: generalemnte están en el mismo cuarto.
+    - Sistema distribuido: justamente están distribuidos a nivel mundial, o en el mismo pais, o mismo continente.
 
-COMUNICACION: 
-    - Multiprocesadores : se comparte memoria. 
+COMUNICACION:
+    - Multiprocesadores : se comparte memoria.
     - Multicomputadora: una red dedicada. Depende el cluster cómo sea, se puede tener un switch o una máquina más
-    sofisticada con una red dedicada. 
-    - Sistema distribuido: red tradicional, se utiliza internet, con algunsa veces con fibra óptica dedicada. 
+    sofisticada con una red dedicada.
+    - Sistema distribuido: red tradicional, se utiliza internet, con algunsa veces con fibra óptica dedicada.
 
-SISTEMAS OPERATIVS: 
+SISTEMAS OPERATIVS:
     - Multiprocesadores : el mismo, un dual core, pero corre android (en el celular por ejemplo)
-    - Multicomputadora: generalmente el mismo, en un claster, se hace correr el mismo SO para todos los nodos. 
+    - Multicomputadora: generalmente el mismo, en un claster, se hace correr el mismo SO para todos los nodos.
     - Sistema distribuido: distinto, un cluster con un SO que funciona de determinada manera, pero otro cluster de otro
-    lado puede tener otro HW, con otro SO más nuevo pero ambos funcionan intercambiándose de forma efectiva la carga. 
+    lado puede tener otro HW, con otro SO más nuevo pero ambos funcionan intercambiándose de forma efectiva la carga.
 
 Nota ARM: ellos te dan un circuito base, te brindan una herramienta de software para modificar ese circuito base, que le
 agregeue más harwarea al procesador, por lo que se tiene un procesador dedicado. Luego cada usuario que diseño ese
 circuito lo manda a fabricar DONDE mejor le convenga. Procesadores que NO están fabricadas con la última tecnología a
-diferencia como en INTEL, por lo que se vuelve muchísimo más barato. 
+diferencia como en INTEL, por lo que se vuelve muchísimo más barato.
 
 Middleware: [Foto en el celular]
 ----------
-Middleware: SO para sistemas distribuidos. 
+Middleware: SO para sistemas distribuidos.
 
 - Se suponen 4 HW distintos: INTEL, AMD, MAC, ARM (micros que tienen nuestros celulares)
-- Corriendo arriba 4 SO distintos: Windows, Linux, MacOS, Android. 
+- Corriendo arriba 4 SO distintos: Windows, Linux, MacOS, Android.
 - Se requiere: Correr un programa que se quiere hacer correr por n nodos distintos (los anteriores) en hardware como en
 SO, por lo que se implementa un Middleware que corra en todos los nodos distintos, y sobre este Middle corre por encima
 de este Middle.  TOdo el SIstema distribuido se conecta por internet. Ejemplo más común de Middle: internet, gmail por
-ejemplo: sin importar el HW o el SO que se utilice, todos pueden visualizar Gmail. 
+ejemplo: sin importar el HW o el SO que se utilice, todos pueden visualizar Gmail.
 
-Grid: 
+Grid:
 ----
-Es básicamente la infraestructura que se necesita para poder acceder a ese computo masivo. 
+Es básicamente la infraestructura que se necesita para poder acceder a ese computo masivo.
 
 *Analogía: (entre la red eléctrica y la grid de una red de cómputo masivo)
     - Infraestructura: crentral terminca, represa hidro, tendidos de alta tensión donde está la demanda, tendido urbano
-    y la red hogareña por último. 
-    - Red eléctrica: es transparete, se enchifa la plancha y no se sabe de dónde viene esa electricidad. 
-    - Es penetrante: porque está en todos lados, no hay lugar donde no llegue. 
+    y la red hogareña por último.
+    - Red eléctrica: es transparete, se enchifa la plancha y no se sabe de dónde viene esa electricidad.
+    - Es penetrante: porque está en todos lados, no hay lugar donde no llegue.
     - Es servicio: se solicita y vienena instalarlo
 
     - Infraestructura: primero un cluster con n nodos conectados entre si en algún lugar del planeta, se requiere una
-    red conectada a internet, y luego hasta que llega a la terminal del usuario. 
+    red conectada a internet, y luego hasta que llega a la terminal del usuario.
     - Será Transparente, un lugar donde se pude acceder que requiera computo masivo, introducir el
-    programa que corra sin saber en dónde se está corriendo, sólo se consumen los datos. Esto es TODAVIA un DESEO. 
-    - Será penetrante también (expresión de deseo) de forma que se pueda acceder desde cualquier lado. 
+    programa que corra sin saber en dónde se está corriendo, sólo se consumen los datos. Esto es TODAVIA un DESEO.
+    - Será penetrante también (expresión de deseo) de forma que se pueda acceder desde cualquier lado.
     - Es servicio: se contrata a una empresa y se puede utilizar el computo masivo, conviene alquilar en vez de
-    construir un cluster completo y dedicado. 
+    construir un cluster completo y dedicado.
         Red Clara: conecta Latinoamerica
         Geant: conecta Europa
 
 ¿Qué se se corre sobre la grid? Aparece el concepto de Cloud Computing, se accede desde la red a una abstracción de la
-grid. 
+grid.
 Cuando nos metemso al google Drive que no se sabe dónde está corriendo o está situado fisicamente, nos conectamos
-subimos una foto, archivo y laburamos sobre la nube, pero sin saber dónde se hospeda. 
+subimos una foto, archivo y laburamos sobre la nube, pero sin saber dónde se hospeda.
 
-Conceptos: 
+Conceptos:
     Grid : relacionado al hardware
-    Clound computing: es la abstracción de la grid, es como el software que corre sorbre la grid. 
+    Clound computing: es la abstracción de la grid, es como el software que corre sorbre la grid.
 
-Tipos de Clound Computing: 
+Tipos de Clound Computing:
     - Pública
     - Privada
-    - Híbrida: Como por ejemplo lo de la Facultad, parte privada y parte pública. 
+    - Híbrida: Como por ejemplo lo de la Facultad, parte privada y parte pública.
 
-Clound Computing: 
+Clound Computing:
     - SAAS: Software com un servicio. Software de alto nivel para solucionar problemas a alto nivel
     - PAAS: Se requiera "tunear" la app brindando más información del cluster para poder mejorar la performance
-    - IAAS: Se requiera TODA la información del cluster para que pueda correr de la mejor manera sobre ese cluster. 
+    - IAAS: Se requiera TODA la información del cluster para que pueda correr de la mejor manera sobre ese cluster.
 
 Empresas que brindan este servicio: Amazon, Facebook, Google, tienen servidores ociosos, lo que hacen es vender cómputo
-masivo. 
+masivo.
 IBM, DELL, SUN MICROSISTEM: los que fabrican HW todos tienen un cluster y ofrecen cómputo masivo porque dicen mira los
-servidores que fabrico, es para poder testearlo y que los usuarios lo testeen para poder luego comprarlos. 
+servidores que fabrico, es para poder testearlo y que los usuarios lo testeen para poder luego comprarlos.
 
-Clientes: 
+Clientes:
 --------
-    Universidades por sobre todo 
-    Por ejemplo empresas Loreal: simulacion de procesos orgánicos, 
+    Universidades por sobre todo
+    Por ejemplo empresas Loreal: simulacion de procesos orgánicos,
     Cuando se fabrican circuitos integrados, para probarlo antes de mandarlo al mercado, se simula por software las
     entradas aleatorias para ese circuito.
 
 
 --------------------------
-Clase 8: 
+Clase 8:
 --------------------------
 
-Errores en el código: 
+Errores en el código:
 --------------------
     int i = 220
     int vec[120];
-    vec[i] = 0; 
+    vec[i] = 0;
 
     El problema que tiene es que se podrá escribir de forma equívoca en un sector de memoria que no le está permitido en
     la pila de memoria asignada a al programa. Y donde manda el vec[200] = 0 quizás esté pisando otra parte de la
-    memoria que está utilizando otro programa. 
-    El compilador de C nos dejará compilar, no tiene chequeo sobre eso. Pero el que NO nos dejará ejecutar es el SO. 
-    Esto se utilizaba en los 80 para hackear la memoria, para saber lo qe está haciendo en la memoria. 
+    memoria que está utilizando otro programa.
+    El compilador de C nos dejará compilar, no tiene chequeo sobre eso. Pero el que NO nos dejará ejecutar es el SO.
+    Esto se utilizaba en los 80 para hackear la memoria, para saber lo qe está haciendo en la memoria.
 
-    Ejercicio de parcial: for que recorre todas las posiciones del vector. 
+    Ejercicio de parcial: for que recorre todas las posiciones del vector.
 
     Ejemplo 1:
     ---------
     int i;
-    int vec[240]; 
+    int vec[240];
 
     for(i = 0; i < 120; i = i + 2){
         vec[i] = 0;
     }
 
-    La tabla en cada vuelta será: 
+    La tabla en cada vuelta será:
         0 - Vec[0]
         2 - vec[2]
         4 - vec[4]
         120 - vec[120]
 
-    Respuesta: en este caso segú nel profesor no tiene problemas de bug. 
+    Respuesta: en este caso segú nel profesor no tiene problemas de bug.
 
     Ejemplo 2:
     ---------
     int i;
-    int vec[240]; 
+    int vec[240];
 
     for(i = 0; i < 480; i = i + 2){
         printf("%d\n", vec[i]);
     }
 
     Respuesta: Acá habría un problema con los elementos, ya que se está yendo a posiciones 480 y leería en lugares de
-    memoria no asignados para la memoria resevada para el programa. 
+    memoria no asignados para la memoria resevada para el programa.
 
-Malware: 
+Malware:
 -------
 Software malicioso: Se toma un programa como un videojuego super popular y en el medio del ejecutable original se le
-mete otro ejecutable malicioso. 
+mete otro ejecutable malicioso.
 Lo que está bueno es que se infecte cada máquina y que todos estos estén escuchando en un puerto determinado, lo que se
 estaia generando sería n nodos conectados maliciosamente que estén respondiendo a la computadora principal de donde se
-disparan las ordenes. 
+disparan las ordenes.
 
-Botnet: 
+Botnet:
 -------
 Por ejemplo: Con esta misma red realizada de forma maliciosa, lo que se hace es generar muchas solicitudes con los
 esclavos de la máquinas que todo el tiempo ese solicitando la apertura de determinado sitio, por lo que los servidores
-del sitio no puede dar respuesta, por lo que el sitio se cae. 
-También se utiliza para poder minar bitcoins y que la ganancia se esté guarde en una sola billetera. 
+del sitio no puede dar respuesta, por lo que el sitio se cae.
+También se utiliza para poder minar bitcoins y que la ganancia se esté guarde en una sola billetera.
 
-Virus: 
+Virus:
 -----
-Programa que se puede reproducir a sí mismo adjuntando su código al de otro programa. 
-Tipos de virus: 
-    - De compañía: virus que sobreescribe una parte de determinado programa, entonces cuando se quiere ejecutar
-    determinado programa, se ejecuta el virus. Virus que se ejecuta cuando se ejecuta el word por ejemplo. 
+Programa que se puede reproducir a sí mismo adjuntando su código al de otro programa.
+Tipos de virus:
+    - De compañía(acompañante): virus que sobreescribe una parte de determinado programa, entonces cuando se quiere
+                                ejecutar determinado programa, se ejecuta el virus. Virus que se ejecuta cuando se
+                                ejecuta el word por ejemplo.
     - De programa ejecutable: sobreescribe un archivo de word y que cada
     - Arranque: infecta la BIOS de la mother. Es un código impreso en determinado lugar de la mother, se ejecuta linea
     por linea en el micro, y con estas instrucciones se pueden identificar los periféricos como el disco y luego
-    levantar el SO. 
+    levantar el SO.
     Cuando se infecta esto, el virus hace que corra cosas ANTES que corra el sistema operativo
-    - Gusanos: corre libre y se reproduce a si mismo sin necesidad de estar pegado a un determinado programa. 
-    - Spyware: virus que espían, que NO destruyen sino que obtienen información. 
-    - Rootkits: conjunto de programas que ocultan su presencia/existencia. 
-        Pueden ser 
-                - de HW: programa como la que infecta una BIOS. 
+    - Gusanos: corre libre y se reproduce a si mismo sin necesidad de estar pegado a un determinado programa.
+    - Spyware: virus que espían, que NO destruyen sino que obtienen información.
+    - Rootkits: conjunto de programas que ocultan su presencia/existencia.
+        Pueden ser
+                - de HW: programa como la que infecta una BIOS.
                 - de SO: en el modo kernel o en el modo usuario que ejecuta módulos. Hay algunos que infectan los
-                hipervisores. 
-                - Los que infectan una lib: las que te infectan una dll de windows por ejemplo. 
-                - Los que infectan una app determinada. 
+                hipervisores.
+                - Los que infectan una lib: las que te infectan una dll de windows por ejemplo.
+                - Los que infectan una app determinada.
 
 
-Defensa para todo esto: 
+Defensa para todo esto:
 ---------------------
 Firewall: hay dos tipos.
-    - Sfotware: 
+    - Software:
     - Hardware: Dispositvo que aisla entre la calle y la red interna y hace lo mismo que hace el firewall de windows
-    pero de una forma más tuneada. 
+    pero de una forma más tuneada.
+    - Antivirus
 
-Antivirus: ¿Cómo trabaja? 
+Antivirus: ¿Cómo trabaja?
     Se tiene una base de datos con códigos y sus virus. Una forma es cuando se escanea que en ningún lugar esté el
     código del virus que se tiene en la base de datos. Luego lo que hace es pesar todos los archivos escaneados, luego
     es comparar el peso que tenía guardado con lo que se está ejecutando, si hay una diferencia es porque hay una carga
-    adicional ejecutándose. 
+    adicional ejecutándose.
     Otra forma: on line, en tiempo de ejecución, ir supervisando los procesos que se están ejecutando y testeandolos el
     comporamiento que están teniendo. Por ejemplo cuando se quiere escribir en región de la memoria no asignada.
 
@@ -258,19 +260,19 @@ Antivirus: ¿Cómo trabaja?
 REPASO:
 ------
 
-SIMETRICOS: 
+SIMETRICOS:
 1)  Cesar HOLA (se agrega +2 en las posiciones del Abecedario) = JQNC
-    Se puede implementar con un for que le suma un número fijo, se sabe ya que es el del CESAR. 
+    Se puede implementar con un for que le suma un número fijo, se sabe ya que es el del CESAR.
 
-2) One time pad: 
-    HOLA : cada letra una posición (offset) distinta que sumar, en este caso para cada posision: 
-        -1, +1, +2, -1   = GPNZ. El problema que tiene esto es que ocupa el doble del mensaje. 
+2) One time pad:
+    HOLA : cada letra una posición (offset) distinta que sumar, en este caso para cada posision:
+        -1, +1, +2, -1   = GPNZ. El problema que tiene esto es que ocupa el doble del mensaje.
 
-3) Sustitución por palabra clave: 
+3) Sustitución por palabra clave:
 
-    - Pensar en una palabra, por ejemplo Calchaqui. 
+    - Pensar en una palabra, por ejemplo Calchaqui.
     - Se transforma la palabra clave viendo si apareció cada uno de los caracteres, quedando: CALHQUI
-    - Se mete en el abecedario que se da en el examen: 
+    - Se mete en el abecedario que se da en el examen:
         ABCDEFGHIJQLMNOPQRSTUVWYXZ --> original dado en el examen
         CALHQUIBDEFGJKMNOPRSTVWXYZ --> modificado
 
@@ -278,18 +280,18 @@ SIMETRICOS:
         A      H   L  O            --> Letras de la palabra a encriptar
         ABCDEFGHIJQLMNOPQRSTUVWYXZ --> original dado en el examen
         CALHQUIBDEFGJKMNOPRSTVWXYZ --> modificado
-        BMGC                       --> "Hola" encriptado 
+        BMGC                       --> "Hola" encriptado
 
     - Hay que tener en cuena que la letra más a la derecha es la U, por lo que se dice que NO SE DIFUNDE más allá de la
     letra mayor del abecedario. POr lo que se debería de tratar de que contenga la mayor cantidad de letras posible y
-    que contenga la Z. 
+    que contenga la Z.
 
-ASIMETRICOS: 
-Se necesitan 4 números: 
+ASIMETRICOS:
+Se necesitan 4 números:
     P y Q primos lo más grande posible. P= 3 y Q = 5
     E y D cualquier número.     E = 3 y D = 11
-                        
-    N = P*Q = 
+
+    N = P*Q =
     N = 3*5 = 15
 
     E*D*Mod((p-1)*(Q-1)) = 1
@@ -306,12 +308,12 @@ Se necesitan 4 números:
     C = encriptado
     C^e * mod(n)
     C = 512 mod(15)
-    512 / 15 = 34 con resto 2. 
+    512 / 15 = 34 con resto 2.
 
         Respuesta: Por lo que 8 será 2
 
     -------------------------------
-    Desencriptamos: 
+    Desencriptamos:
     M = C^d * mod (n)
     M = 2^11 * mod (15)
     M = 2048 * mod (15)
@@ -321,37 +323,37 @@ Se necesitan 4 números:
     Lo que tiene es que para encriptar se utiliza UN PAR que es E y N y para desencriptar se utiliza el otro par que es
     D y N
     Si los números no cumplen con las condiciones, NO HACER nada, termina ahí con el ejercicio, NO poner siquiera el
-    rango. 
+    rango.
 
-    Variación del ejercicio del parcial: 
+    Variación del ejercicio del parcial:
     -----------------------------------
-    Se puede dar que no se de un solo número: 
-    P = 3, Q = 7 
+    Se puede dar que no se de un solo número:
+    P = 3, Q = 7
     E = ? D = 11
 
     e*D*mod(3-1 * 7-1) = 1?
     e*11mod(12) = 1?
-    
+
     e*11 / 12 y empezar a buscar reemplazando la e para ver si es que me de un resto igual a 1
     e = 11 (y luego se sigue todo el ejercicio anterior)
 
 
     Lo que se debe hacer: A partir de la tabla, se obtienen las demás tuplas de Tabla global, Lista de Acceso y la
-    Lista de Acceso. 
+    Lista de Acceso.
 
-    Matriz de acceso: 
+    Matriz de acceso:
     ----------------
 
         Ex = ejecutar
         w = escribir
         r = leer
                     objeto 1    objeto 2    objeto 3
-        Usuario 1   ex          w           
+        Usuario 1   ex          w
         Usuario 2                           r
         Usuario 3                           wr
 
-    
-    Tabla de Acceso: 
+
+    Tabla de Acceso:
     ---------------
     Se esribe mediante tupla de la siguiente forma: <dominio, objeto, derecho acceso>
         <usuario 1, objeto 1, ex>
@@ -359,7 +361,7 @@ Se necesitan 4 números:
         <usuario 2, objeto 3, r>
         <usuario 3, objeto 3, wr>
 
-    Lista de acceso: 
+    Lista de acceso:
     ----------------
     Cómo se representa: objeto <dominio, derecho de acceso>
         objeto 1 <usuario 1, ex>
@@ -367,12 +369,12 @@ Se necesitan 4 números:
         objeto 3 <usuario 2, r>
         objeto 3 <usuario 3, WR>
 
-    Lista de capacidad : 
+    Lista de capacidad :
     -------------------
     Cómo se representa: dominio <objeto, derecho de acceso>
-       usuario 1 <objeto 1 , ex> 
-       usuario 1 <objeto 2 , w> 
-       usuario 2 <objeto 3 , r> 
-       usuario 3 <objeto 3 , wr> 
+       usuario 1 <objeto 1 , ex>
+       usuario 1 <objeto 2 , w>
+       usuario 2 <objeto 3 , r>
+       usuario 3 <objeto 3 , wr>
 
-    Se puede pedir: Graficar una máquina con un hipervisor tipo 1 o 2 
+    Se puede pedir: Graficar una máquina con un hipervisor tipo 1 o 2
